@@ -8,19 +8,13 @@ class Socket {
 
 	establishSocket():void{
 		this.websocket = io(this.url);
-		this.websocket.on('connect', (data:any)=>{
-			this.sendSocket('con', '1');
-		});
-		this.websocket.on('disconnect', (data:any)=>{
-			console.log('dsc');
-			// this.websocket = null;
-			// this.websocket = io(this.url);
-		});
+		this.websocket.on('connect', (data:any)=>{	console.log('con');});
+		this.websocket.on('disconnect', (data:any)=>{	console.log('dsc');	});
 		this.websocket.on("ping", (data:any) => {
-			console.log("received ping");
+			// console.log("received ping");
 		});
 		this.websocket.on("pong", (data:any) => {
-			console.log("received pong");
+			// console.log("received pong");
 		});
 		this.websocket.on('message', this.clientMessaged);
 		this.websocket.on('error', this.socketError);
