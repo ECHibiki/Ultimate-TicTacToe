@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from werkzeug.contrib.fixers import ProxyFix
 import logging
@@ -21,9 +21,13 @@ def game_route():
     print('Number of connections to / : ' + str(counter))
     return open('index.html', 'r', encoding='cp932', errors='ignore').read()
     
-@app.route('/app.js')
-def js_route():
-    return open('app.js', 'r', encoding='cp932', errors='ignore').read()
+@app.route('/<path:path>')
+def rsc_route(path):
+    return send_from_directory('',path)
+
+@app.route('/sprites/<path:path>')
+def spr_route(path):
+    return send_from_directory('sprites', path)
     
 @socketio.on('message')
 def handle_message(message):
@@ -35,27 +39,25 @@ def handle_json(json):
         
 @socketio.on('connect')
 def on_connect():
-    user_id = request.sid
-    session_formed =  matchmake.checkJoin(user_id);
-    print("Client connected: " + user_id)
+    print("Client connected: " + request.sid)
 
 @socketio.on('disconnect')
 def on_disconnect():
     user_id = request.sid
-    matchmake.checkDisconnect(user_id);
+    session_closed, room_id =  matchmake.checkDisconnect(user_id);
+    if session_closed:
+        session.close(room_id)
     print("Client disconnect: " + user_id)
     
-@socketio.on('join')
-def on_join(data):
-    username = session['username']
-    room = data['room']
-    send(username + ' has entered the room.', room=room)
-    
-@socketio.on('leave')
-def on_leave(data):
-    username = session['username']
-    room = data['room']
-    send(username + ' has left the room.', room=room)
+@socketio.on('ready')
+def on_connect(ready):
+    user_id = request.sid
+    session_formed, room_id =  matchmake.checkJoin(user_id);
+    if session_formed:
+        session.start(room_id)
+    else:
+        emit('ready','1')
+    print("Client ready: " + user_id)
  
 # if __name__ == '__main__':
 log = logging.getLogger('werkzeug')
