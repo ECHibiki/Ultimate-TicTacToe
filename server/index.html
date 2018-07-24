@@ -5,10 +5,40 @@
     <meta charset="utf-8" />
 	<script src="https://cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.min.js"></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js'></script>
-    <title>TypeScript HTML App</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="app.js"></script>
+    <title>Ultimate TicTacToe</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
-    <script src="app.js?"></script>
 </head>
 <body>
+<div class='container pt-4'>
+	<div>
+	<h1>Ultimate Tic-Tac-Toe</h1>
+	</div>
+	<div class='row'>
+		<div id='phaser-game' class='col-6'>
+		</div>
+		<div id='rules' class='col-6'>
+			<h3>Rules</h3>
+			<ul>
+				<li>If X played in the top-right corner of the local board, O is forced to play their next move in the top-right local board.</li>
+				<li>Each small 3-by-3 tic-tac-toe board is referred to as a local board, and the larger 3-by-3 board is referred to as the global board.</li>
+				<li>The game starts with X playing wherever they want in any of the 81 empty spots. </li>
+				<li>This move 'sends' their opponent to its relative location.</li>
+					<ul>
+						<li>For example, if X played in the top right square of their local board, then O needs to play next in the local board at the top right of the global board.</li> 
+						<li>O can then play in any one of the nine available spots in that local board, each move sending X to a different local board.</li>
+					</ul>
+				<li>If a move is played so that it is to win a local board by the rules of normal tic-tac-toe, then the entire local board is marked as a victory for the player in the global board.</li>
+				<li>Once the outcome of a local board is decided (win or draw), no more moves may be played in that board. If a player is sent to such a board, then that player may play in any other board.</li>
+				<li>Game play ends when either a player wins the global board, or there are no legal moves remaining.</li>
+			</ul>
+			<a href='https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe'></a>
+		</div>
+	</div>
+</div>
 </body>
 </html>

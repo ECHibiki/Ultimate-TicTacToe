@@ -36,7 +36,8 @@ class GameSettings{
 			scene: {
 				preload: preload,
 				create:create
-			}
+			},
+			parent:'phaser-game'
 		};
 		
 		
@@ -46,7 +47,7 @@ class GameSettings{
 			this.load.image('board', 'sprites/board.jpg');
 			this.load.image('x', 'sprites/x.png');
 			this.load.image('o', 'sprites/o.png');
-			this.info_text =  this.add.text(10, 16, '', { fontSize: '28px', fill: '#fff' });
+			this.info_text =  this.add.text(10, 16, '', { fontSize: '22px', fill: '#fff' });
 		}
 		
 		function create (){
@@ -59,7 +60,7 @@ class GameSettings{
 					
 			//socket handlers
 			socket.socketListener('ready', (data:any)=>{
-				this.info_text.setText('Searching for players');
+				this.info_text.setText('Searching for players...');
 				console.log(data)
 				this.client_id = data
 				
@@ -78,19 +79,19 @@ class GameSettings{
 			});
 			
 			socket.socketListener('broken',(data:any)=>{
-				this.info_text.setText('Disconnected with session')
+				this.info_text.setText('Disconnected with other session')
 			});
 			socket.socketListener('board-data',(data:any)=>{
 				//turns
 				if(data[this.client_id] == data['Turn']){
-					this.info_text.setText('Turn ' + data['Turn'] + '(you)')
+					this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move'])
 					this.players_turn = true
 					this.player_piece = data['Turn']
 					// if( data['Turn'] == 'x') this.x_cursor_icon.visible = true;
 					// else this.o_cursor_icon.visible = true;
 				}
 				else{
-					this.info_text.setText('Turn ' + data['Turn'] + '(opponent)');
+					this.info_text.setText('Turn ' + data['Turn'] + '(opponent) - Move ' + data['Move']);
 					this.players_turn = false;
 					// if( data['Turn'] == 'x') this.x_cursor_icon.visible = false;
 					// else this.o_cursor_icon.visible = false;

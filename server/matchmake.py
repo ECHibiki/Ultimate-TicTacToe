@@ -60,9 +60,15 @@ def formRoom(sid1, sid2):
     return room_id
     
 def clearRoom(room_to_clear, sid):
+    print(str(_rooms))
+    print(room_to_clear)
+    print(sid)
     emit('broken', sid + ' has left the room: ' + sid, room=room_to_clear)
-    # close_room(room_to_clear)
-    _rooms.remove(room_to_clear)
+    close_room(room_to_clear)
+    try:
+        _rooms.remove(room_to_clear)
+    except ValueError:
+        pass
     return room_to_clear
 
     

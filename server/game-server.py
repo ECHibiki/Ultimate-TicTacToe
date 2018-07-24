@@ -1,5 +1,5 @@
 from flask import Flask, request, send_from_directory
-from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask_socketio import SocketIO, send, emit, join_room, leave_room, rooms
 from werkzeug.contrib.fixers import ProxyFix
 import logging
 
@@ -60,6 +60,8 @@ def on_connect(ready):
     
 @socketio.on('move')
 def on_disconnect(position):
+    if len(rooms()) < 2:
+        return
     print(str(position))
     user_id = request.sid
     session.move(user_id, position)

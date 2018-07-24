@@ -31,14 +31,15 @@ var GameSettings = /** @class */ (function () {
             scene: {
                 preload: preload,
                 create: create
-            }
+            },
+            parent: 'phaser-game'
         };
         this.game = new Phaser.Game(config);
         function preload() {
             this.load.image('board', 'sprites/board.jpg');
             this.load.image('x', 'sprites/x.png');
             this.load.image('o', 'sprites/o.png');
-            this.info_text = this.add.text(10, 16, '', { fontSize: '28px', fill: '#fff' });
+            this.info_text = this.add.text(10, 16, '', { fontSize: '22px', fill: '#fff' });
         }
         function create() {
             var _this = this;
@@ -50,7 +51,7 @@ var GameSettings = /** @class */ (function () {
             this.o_board = [];
             //socket handlers
             socket.socketListener('ready', function (data) {
-                _this.info_text.setText('Searching for players');
+                _this.info_text.setText('Searching for players...');
                 console.log(data);
                 _this.client_id = data;
             });
@@ -66,19 +67,19 @@ var GameSettings = /** @class */ (function () {
                 _this.o_cursor_icon = _this.add.image(900, 0, 'o');
             });
             socket.socketListener('broken', function (data) {
-                _this.info_text.setText('Disconnected with session');
+                _this.info_text.setText('Disconnected with other session');
             });
             socket.socketListener('board-data', function (data) {
                 //turns
                 if (data[_this.client_id] == data['Turn']) {
-                    _this.info_text.setText('Turn ' + data['Turn'] + '(you)');
+                    _this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move']);
                     _this.players_turn = true;
                     _this.player_piece = data['Turn'];
                     // if( data['Turn'] == 'x') this.x_cursor_icon.visible = true;
                     // else this.o_cursor_icon.visible = true;
                 }
                 else {
-                    _this.info_text.setText('Turn ' + data['Turn'] + '(opponent)');
+                    _this.info_text.setText('Turn ' + data['Turn'] + '(opponent) - Move ' + data['Move']);
                     _this.players_turn = false;
                     // if( data['Turn'] == 'x') this.x_cursor_icon.visible = false;
                     // else this.o_cursor_icon.visible = false;
