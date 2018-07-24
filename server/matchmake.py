@@ -37,10 +37,13 @@ def clearSID(sid):
     waiting_list_text = waiting_list_handle.read()
     waiting_list_handle.close()
 
+    if waiting_list_text.find(sid) == -1:
+        return
+    
     waiting_list_arr = waiting_list_text.split('\n')
     del waiting_list_arr[waiting_list_arr.index(sid)]
     waiting_list_text =  '\n'.join(waiting_list_arr)
-    print('text: ' + waiting_list_text)
+    #print('text: ' + waiting_list_text)
     
     waiting_list_handle = open('waiting', 'w')
     waiting_list_handle.write(waiting_list_text)
@@ -48,12 +51,13 @@ def clearSID(sid):
   
 def formRoom(sid1, sid2):
     print(sid1 + ' vs. ' + sid2)
-    join_room(sid1 + ' vs. ' + sid2, sid=sid1)
-    join_room(sid1 + ' vs. ' + sid2, sid=sid2)
-    emit('join', sid1 + ' and ' + sid2 + ' have entered the room.', room=(sid1 + ' vs. ' + sid2))
+    room_id =  (sid1 + '-' + sid2)
+    join_room(room_id, sid=sid1)
+    join_room(room_id, sid=sid2)
+    emit('join', sid1 + ' and ' + sid2 + ' have entered the room.', room=room_id)
     clearSID(sid1)
-    _rooms.append(sid1 + ' vs. ' + sid2)
-    return sid1 + ' vs. ' + sid2
+    _rooms.append(room_id)
+    return room_id
     
 def clearRoom(room_to_clear, sid):
     emit('broken', sid + ' has left the room: ' + sid, room=room_to_clear)

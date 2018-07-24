@@ -11,7 +11,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, num_proxies=1)
 def get_remote_addr(self, forwarded_for):
     if len(forwarded_for) >= self.num_proxies:
         return forwarded_for[-self.num_proxies]
-socketio = SocketIO(app, ping_timeout=5, ping_interval=1)
+socketio = SocketIO(app, ping_timeout=10, ping_interval=5)
 counter = 0
 @app.route('/')
 def game_route():
@@ -52,12 +52,18 @@ def on_disconnect():
 @socketio.on('ready')
 def on_connect(ready):
     user_id = request.sid
+    emit('ready',user_id)
     session_formed, room_id =  matchmake.checkJoin(user_id);
     if session_formed:
         session.start(room_id)
-    else:
-        emit('ready','1')
     print("Client ready: " + user_id)
+    
+@socketio.on('move')
+def on_disconnect(position):
+    print(str(position))
+    user_id = request.sid
+    session.move(user_id, position)
+    print("Client Moved: " + user_id + ' to ' + str(position['x']) + '-'+ str(position['y']))
  
 # if __name__ == '__main__':
 log = logging.getLogger('werkzeug')
