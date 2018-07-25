@@ -166,4 +166,9 @@ window.onload = function () {
     var socket = new Socket();
     var game = new GameSettings(socket);
 };
+var Chat = /** @class */ (function () {
+    function Chat() {
+    }
+    return Chat;
+}());
 //# sourceMappingURL=app.js.map

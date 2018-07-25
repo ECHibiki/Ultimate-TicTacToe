@@ -58,7 +58,9 @@
   }
   ,
   "files": [
+        "src/phaser.d.ts",
+        "src/game.ts",
         "src/app.ts",
-        "src/phaser.d.ts"
+		"src/chat.ts"
     ]  
 }

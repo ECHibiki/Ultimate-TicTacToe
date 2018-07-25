@@ -48,19 +48,23 @@ def storeBoard(room_id):
 def move(sid, position):
     room_id = determineRoom(sid)
     if validateTurn(sid, position['x'], position['y'], room_id):
-        placePiece9X9(position['x'], position['y'], room_id)
+        placePieceBoard(position['x'], position['y'], room_id)
         sessions[room_id]['Previous-Turn'] = str(position['x']) + "|" + str(position['y'])
         sessions[room_id]['Move'] = sessions[room_id]['Move'] + 1
         
-        three_x_three = reduce3X3(position['x'], position['y'], sessions[room_id]['Board'])
-        if checkGridWon(three_x_three):
-            placePiece3X3(floor(position['x'] / 3), floor(position['y'] / 3), room_id)
+        three_x_three_main = reduce3X3(position['x'], position['y'], sessions[room_id]['Board'])
+        if checkGridWon(three_x_three_main):
             three_x_three_reduced = array3X3(sessions[room_id]['Reduced-Board'])
-            if checkGridWon(three_x_three_reduced):
-                sessions[room_id]['Message'] = 'Player ' + sessions[room_id]['Turn'] + 'wins!'
+            if three_x_three_reduced[floor(position['x'] / 3)][floor(position['y'] / 3)] == '-':
+                sessions[room_id]['Reduced-Board'] = placePieceOn3X3(floor(position['x'] / 3), floor(position['y'] / 3), three_x_three_reduced, sessions[room_id]['Turn'])
+                if checkGridWon(three_x_three_reduced):
+                    sessions[room_id]['Message'] = 'Player ' + sessions[room_id]['Turn'] + 'wins!'
+                else:
+                    swapTurn(room_id)
+                    sessions[room_id]['Message'] = 'Section Won - Turn '+ sessions[room_id]['Turn'] 
             else:
                 swapTurn(room_id)
-                sessions[room_id]['Message'] = 'Section Won - Turn '+ sessions[room_id]['Turn'] 
+                sessions[room_id]['Message'] = 'Section Already Won - Turn '+ sessions[room_id]['Turn'] 
         else:
             sessions[room_id]['Message'] = ''
             swapTurn(room_id)
@@ -139,7 +143,7 @@ def isOverlap(x, y, room_id):
     else:
         return True
         
-def placePiece9X9(x, y, room_id):
+def placePieceBoard(x, y, room_id):
     board_copy = sessions[room_id]['Board'].split('\n')
     board_to_replace = ''
     for index_r, row in enumerate(board_copy):  
@@ -151,17 +155,12 @@ def placePiece9X9(x, y, room_id):
     board_to_replace = board_to_replace[:-1]
     sessions[room_id]['Board'] = board_to_replace
  
-def placePiece3X3(x, y, room_id):
-    board_copy = sessions[room_id]['Reduced-Board'].split('\n')
-    board_to_replace = ''
-    for index_r, row in enumerate(board_copy):  
-        if index_r == y:
-            row = row.split(' ')
-            row[x] = sessions[room_id]['Turn']
-            row = ' '.join(row)
-        board_to_replace = board_to_replace + row + '\n'
-    board_to_replace = board_to_replace[:-1]
-    sessions[room_id]['Reduced-Board'] = board_to_replace
+def placePieceOn3X3(x, y, three_x_three, piece):
+    three_x_three[y][x] = piece
+    three_x_three_copy = ''
+    for row in three_x_three:
+        three_x_three_copy = three_x_three_copy + ' '.join(row) + '\n'
+    return three_x_three_copy[:-1]
              
             
 def swapTurn(room_id):
