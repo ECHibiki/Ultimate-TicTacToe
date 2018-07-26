@@ -26,9 +26,9 @@
 		<div>
 		<h1>Ultimate Tic-Tac-Toe</h1>
 		</div>
-		<div class='row'>
-			<div id='phaser-game' class='col-6 p-4' style='background-color:rgba(234, 188, 76,0.3)'></div>
-			<div id='game-details' class='col-6 bg-white' style=''>
+		<div class='row' style=''>
+			<div id='phaser-game' class='col-md-6 col-sm-12' style='background-color:rgba(234, 188, 76,0.3);display:contents;overflow:visible'></div>
+			<div id='game-details' class='col-md-6 col-sm-0 m-4 bg-white' >
 				<ul class="nav nav-tabs" id='info-tabs' role='tablist'>
 					<li class="nav-item">
 						<a class="nav-link" id='rules-tab' data-toggle='tab' href="#rules" role='tab' aria-controls='rules' aria-selected='false'>Rules</a>
@@ -43,7 +43,7 @@
 				<div class="tab-content p-1" id="info-pane">
 					<div id='rules' class='tab-pane fade' role='tabpanel' aria-labelledby='rules-tab' style=''>
 						<h2 class='text-center'>Rules</h2>
-						<ul class="font-weight-bold" style='font-size:16px'>
+						<ul class="font-weight-bold" style='font-size:16px;overflow:auto;height:333px'>
 							<li>If X played in the top-right corner of the local board, O is forced to play their next move in the top-right local board.</li>
 							<li>Each small 3-by-3 tic-tac-toe board is referred to as a local board, and the larger 3-by-3 board is referred to as the global board.</li>
 							<li>The game starts with X playing wherever they want in any of the 81 empty spots. </li>
@@ -73,11 +73,11 @@
 								<div class='col-12 border rounded px-0 pt-2 pb-0 bg-light' id='main-chat'>
 									<ul class='container pl-0 pr-2 py-2' style='list-style:none;overflow-y:auto;overflow-x:hidden;height:%'>
 										<li><div class='row'><div class='col-3 border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf1292&gt;</div><div class='col-9 text-left'>A sentence of no vlsdfgsdfgsdfg sdafue sdf</div></div></li>
-										<li><div class='row'><div class='col-3 border-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf44444&gt;</div><div class='col-9 text-left'>A sentence of no vlsdfgsdfgsdfg sde sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue s sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf</div></div></li>
+										<li><div class='row'><div class='col-3 border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf44444&gt;</div><div class='col-9 text-left'>A sentence of no vlsdfgsdfgsdfg sde sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue s sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf</div></div></li>
 										<li><div class='col-12 px-4 py-2 text-left font-italic'>Game did some crzy stuff</div></li>
 									</ul>
-									<div class='border row p-0 m-0 bg-secondary' id='chat-box'>
-										<div class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1' id='username' style='opacity:1.0'>&lt;asdf44444&gt;</div>
+								<div class='border rounded row p-0 m-0 bg-light' id='chat-box'>
+									<a class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1 btn active' href="javascript:void();" role='button' aria-pressed='true' id='username' style='opacity:1.0'>&lt;asdf44444&gt;</a>
 										<div class='border col-10 p-0 bg-light' id='text-input'><input class='w-100' type='text' style='opacity:0.9'></div>
 									</div>
 								</div>
@@ -120,13 +120,13 @@
 					</ul>
 				</div>
 				<div class='col-10 border rounded px-0 pt-2 pb-0 bg-light' id='main-chat'>
-					<ul class='container pl-0 pr-2 py-2' style='list-style:none;overflow-y:auto;overflow-x:hidden;height:20%'>
+					<ul class='container pl-0 pr-2 py-2' style='list-style:none;overflow-y:auto;overflow-x:hidden;height:82%'>
 						<li><div class='row'><div class='col-2  border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf1292&gt;</div><div class='col-10 text-left'>A sentence of no vlsdfgsdfgsdfg sdafue sdf</div></div></li>
 						<li><div class='row'><div class='col-2  border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf44444&gt;</div><div class='col-10 text-left'>A sentence of no vlsdfgsdfgsdfg sde sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue s sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf</div></div></li>
 						<li><div class='row'><div class='col-2  border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf&gt;</div><div class='col-10 text-left' >A sentence of no vlsdfgsdfgsdfg sdafue sdf</div></div></li>
 					</ul>
-					<div class='border row p-0 m-0 bg-secondary' id='chat-box'>
-						<div class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1' id='username' style='opacity:1.0'>&lt;asdf44444&gt;</div>
+					<div class='border rounded row p-0 m-0 bg-light' id='chat-box'>
+						<a class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1 btn active' href="javascript:void();" role='button' aria-pressed='true' id='username' style='opacity:1.0'>&lt;asdf44444&gt;</a>
 						<div class='border col-10 p-0 bg-light' id='text-input'><input class='w-100' type='text' style='opacity:0.9'></div>
 					</div>
 				</div>
