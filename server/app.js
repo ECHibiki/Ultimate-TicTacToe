@@ -1,4 +1,10 @@
 "use strict";
+var GameConstants = /** @class */ (function () {
+    function GameConstants() {
+    }
+    GameConstants.client_name = '';
+    return GameConstants;
+}());
 var Socket = /** @class */ (function () {
     function Socket() {
         this.url = "http://144.172.129.226:3231";
@@ -16,29 +22,33 @@ var Socket = /** @class */ (function () {
 }());
 var GameSettings = /** @class */ (function () {
     function GameSettings(socket) {
-        this.game = null;
-        this.info_text = null;
-        this.client_id = '';
-        this.players_turn = false;
-        this.player_piece = '';
-        this.board_width = 500;
-        this.board_height = 550;
-        var that = this;
+        var game = null;
+        var info_text = null;
+        var client_id = '';
+        var players_turn = false;
+        var player_piece = '';
+        var board_width = 500;
+        var board_height = 500;
+        var game_lower_padding = 50;
+        var reapear_location_x = -100;
+        var reapear_location_y = -100;
         var config = {
-            type: Phaser.CANVAS,
-            width: this.board_width,
-            height: this.board_height,
+            type: Phaser.AUTO,
+            width: board_width,
+            height: board_height + game_lower_padding,
             scene: {
                 preload: preload,
                 create: create
             },
             parent: 'phaser-game'
         };
-        this.game = new Phaser.Game(config);
+        game = new Phaser.Game(config);
         function preload() {
             this.load.image('board', 'sprites/board.jpg');
             this.load.image('x', 'sprites/x.png');
+            this.load.image('xG', 'sprites/xG.png');
             this.load.image('o', 'sprites/o.png');
+            this.load.image('oG', 'sprites/oG.png');
             this.info_text = this.add.text(10, 16, '', { fontSize: '22px', fill: '#fff' });
         }
         function create() {
@@ -46,7 +56,9 @@ var GameSettings = /** @class */ (function () {
             this.info_text.setText('connecting...');
             this.board = null;
             this.x_cursor_icon = null;
+            this.x_previous = null;
             this.o_cursor_icon = null;
+            this.o_previous = null;
             this.x_board = [];
             this.o_board = [];
             //socket handlers
@@ -64,25 +76,47 @@ var GameSettings = /** @class */ (function () {
                 _this.info_text.setText('Setting up game...');
                 _this.board = _this.add.image(250, 250, 'board');
                 _this.x_cursor_icon = _this.add.image(900, 0, 'x');
+                _this.x_previous = _this.add.image(900, 0, 'xG');
                 _this.o_cursor_icon = _this.add.image(900, 0, 'o');
+                _this.o_previous = _this.add.image(900, 0, 'oG');
             });
             socket.socketListener('broken', function (data) {
                 _this.info_text.setText('Disconnected with other session');
             });
             socket.socketListener('board-data', function (data) {
+                var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
+                var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
                 //turns
-                if (data[_this.client_id] == data['Turn']) {
+                if (data[_this.client_id]['Piece'] == data['Turn']) {
                     _this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move']);
                     _this.players_turn = true;
                     _this.player_piece = data['Turn'];
-                    // if( data['Turn'] == 'x') this.x_cursor_icon.visible = true;
-                    // else this.o_cursor_icon.visible = true;
+                    if (data['Previous-Turn'] != '-') {
+                        if (data['Turn'] == 'x') {
+                            _this.x_cursor_icon.x = reapear_location_x;
+                            _this.x_cursor_icon.y = reapear_location_y;
+                            _this.o_previous.x = previous_x;
+                            _this.x_previous.x = -100;
+                            _this.o_previous.y = previous_y;
+                            _this.x_previous.y = -100;
+                        }
+                        else {
+                            _this.o_cursor_icon.x = reapear_location_x;
+                            _this.o_cursor_icon.y = reapear_location_y;
+                            _this.x_previous.x = previous_x;
+                            _this.o_previous.x = -100;
+                            _this.x_previous.y = previous_y;
+                            _this.o_previous.y = -100;
+                        }
+                    }
                 }
                 else {
                     _this.info_text.setText('Turn ' + data['Turn'] + '(opponent) - Move ' + data['Move']);
                     _this.players_turn = false;
-                    // if( data['Turn'] == 'x') this.x_cursor_icon.visible = false;
-                    // else this.o_cursor_icon.visible = false;
+                    if (data['Turn'] == 'x')
+                        _this.x_cursor_icon.visible = false;
+                    else
+                        _this.o_cursor_icon.visible = false;
                 }
                 //Extra messages
                 if (data['Message'] != '') {
@@ -100,11 +134,13 @@ var GameSettings = /** @class */ (function () {
                 board.forEach(function (el, ind_y) {
                     var el_split = el.split(' ');
                     el_split.forEach(function (e, ind_x) {
+                        if (ind_y == data['Previous-Turn'].split('|')[1] && ind_x == data['Previous-Turn'].split('|')[0])
+                            return;
                         if (e == 'x') {
-                            _this.x_board.push(_this.add.image(ind_x * 500 / 9 + 500 / 18, ind_y * 500 / 9 + 500 / 18, 'x'));
+                            _this.x_board.push(_this.add.image(ind_x * board_width / 9 + board_width / 18, ind_y * board_height / 9 + board_height / 18, 'x'));
                         }
                         else if (e == 'o') {
-                            _this.o_board.push(_this.add.image(ind_x * 500 / 9 + 500 / 18, ind_y * 500 / 9 + 500 / 18, 'o'));
+                            _this.o_board.push(_this.add.image(ind_x * board_width / 9 + board_width / 18, ind_y * board_height / 9 + board_height / 18, 'o'));
                         }
                     });
                 });
@@ -113,13 +149,15 @@ var GameSettings = /** @class */ (function () {
             this.input.on('pointerdown', function (event) {
                 if (_this.players_turn) {
                     var y = event.y;
-                    if (y > 499)
-                        y = 499;
+                    if (y > board_height - 1)
+                        y = board_height - 1;
                     var x = event.x;
                     var seg_xy = {
-                        'x': Math.floor(x / (500 / 9)),
-                        'y': Math.floor(y / (500 / 9)),
+                        'x': Math.floor(x / (board_width / 9)),
+                        'y': Math.floor(y / (board_height / 9)),
                     };
+                    _this.reapear_location_x = x * board_width / 9 + board_width / 18;
+                    _this.reapear_location_y = y * board_height / 9 + board_height / 18;
                     socket.sendSocket('move', seg_xy);
                 }
             });
@@ -127,12 +165,12 @@ var GameSettings = /** @class */ (function () {
             this.input.on('pointermove', function (event) {
                 if (_this.players_turn) {
                     var y = event.y;
-                    if (y > 499)
-                        y = 499;
+                    if (y > board_height - 1)
+                        y = board_height - 1;
                     var x = event.x;
                     var seg_xy = {
-                        'x': Math.floor(x / (500 / 9)) * (500 / 9) + (500 / (9 * 2)),
-                        'y': Math.floor(y / (500 / 9)) * (500 / 9) + (500 / (9 * 2)),
+                        'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
+                        'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
                     };
                     if (_this.player_piece == 'x') {
                         _this.x_cursor_icon.x = seg_xy['x'];
@@ -145,7 +183,7 @@ var GameSettings = /** @class */ (function () {
                 }
             }, this);
             //send ready sign
-            socket.sendSocket('ready', document.cookie);
+            socket.sendSocket('ready', GameConstants.client_name);
         }
     }
     return GameSettings;
@@ -160,10 +198,19 @@ function makeid() {
 }
 window.onload = function () {
     //document.body.innerHTML = "<canvas id='game' width=500 height=500 style='border:solid black 1px'></canvas>";
-    if (document.cookie == undefined) {
-        document.cookie = 'code=' + makeid();
+    if (document.cookie == '') {
+        var code = prompt('message', makeid());
+        if (code == '')
+            code = makeid();
+        document.cookie = 'code=' + code;
     }
+    GameConstants.client_name = document.cookie.split('=')[1];
     var socket = new Socket();
     var game = new GameSettings(socket);
 };
+var Chat = /** @class */ (function () {
+    function Chat() {
+    }
+    return Chat;
+}());
 //# sourceMappingURL=app.js.map

@@ -3,49 +3,90 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.min.js"></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js'></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-	<script src="app.js"></script>
     <title>Ultimate TicTacToe</title>
+	<script src="app.js?44r5666"></script>
     <link rel="stylesheet" href="app.css" type="text/css" />
 </head>
 <body style='background-color:rgb(234, 188, 76)'>
-<img src='https://cdn.suwalls.com/wallpapers/anime/panty-stocking-with-garterbelt-15263-1920x1200.jpg' style='position:fixed; height:100%;right:0px;z-index:-1'>
-<div class='container pt-4'>
-	<div>
-	<h1>Ultimate Tic-Tac-Toe</h1>
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	  <strong>Info: </strong> Use the side bar for game chat and moves, rules and name settings. Bellow the page is global chat.
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	  </button>
+	<!-- Ripped from https://getbootstrap.com/docs/4.1/components/alerts/ -->
 	</div>
-	<div class='row'>
-		<div id='phaser-game' class='col-6 p-4' style='background-color:rgba(234, 188, 76,0.3)'>
+	<img src='panty-stocking-with-garterbelt-15263-1920x1200.jpg' class='position-fixed' style='height:100%;left:0%;top:0%;z-index:-1'>
+	<div class='container pt-5'>
+		<div>
+		<h1>Ultimate Tic-Tac-Toe</h1>
 		</div>
-		<div id='rules' class='col-6' style='background-color:rgba(234, 188, 76,0.5)'>
-			<h2 class='text-center'>Rules</h2>
-			<ul class="font-weight-bold" style='font-size:16px'>
-				<li>If X played in the top-right corner of the local board, O is forced to play their next move in the top-right local board.</li>
-				<li>Each small 3-by-3 tic-tac-toe board is referred to as a local board, and the larger 3-by-3 board is referred to as the global board.</li>
-				<li>The game starts with X playing wherever they want in any of the 81 empty spots. </li>
-				<li>This move 'sends' their opponent to its relative location.</li>
-					<ul>
-						<li>For example, if X played in the top right square of their local board, then O needs to play next in the local board at the top right of the global board.</li> 
-						<li>O can then play in any one of the nine available spots in that local board, each move sending X to a different local board.</li>
+		<div class='row'>
+			<div id='phaser-game' class='col-6 p-4' style='background-color:rgba(234, 188, 76,0.3)'>
+			</div>
+			<div id='rules' class='col-6' style='background-color:rgba(234, 188, 76,0.5)'>
+				<h2 class='text-center'>Rules</h2>
+				<ul class="font-weight-bold" style='font-size:16px'>
+					<li>If X played in the top-right corner of the local board, O is forced to play their next move in the top-right local board.</li>
+					<li>Each small 3-by-3 tic-tac-toe board is referred to as a local board, and the larger 3-by-3 board is referred to as the global board.</li>
+					<li>The game starts with X playing wherever they want in any of the 81 empty spots. </li>
+					<li>This move 'sends' their opponent to its relative location.</li>
+						<ul>
+							<li>For example, if X played in the top right square of their local board, then O needs to play next in the local board at the top right of the global board.</li> 
+							<li>O can then play in any one of the nine available spots in that local board, each move sending X to a different local board.</li>
+						</ul>
+					<li>If a move is played so that it is to win a local board by the rules of normal tic-tac-toe, then the entire local board is marked as a victory for the player in the global board.</li>
+					<li>Once the outcome of a local board is decided (win or draw), no more moves may be played in that board. If a player is sent to such a board, then that player may play in any other board.</li>
+					<li>Game play ends when either a player wins the global board, or there are no legal moves remaining.</li>
+					<li><a href='https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe'>From Wikipedia</a></li>
+				</ul>
+				<hr/>
+				<!-- <br/> -->
+				<!-- <br/> -->
+				<div class='text-center'>
+					<a href='https://www.youtube.com/watch?v=ejTgl3cCyDo' style='color:#C70039;' class='font-weight-light' target='_blank'>Break the rules</a>
+				</div>
+			</div>	
+		</div>
+		<hr/>
+		<div class='border-dark rounded bg-secondary mx-0 mt-0 mb-2' id='global-chat' style='opacity:0.95'>
+			<div class='container border px-4 py-2 bg-white' id='upper-info'>
+				<h4 style='opacity:1.0 dispaly-4'>Global Chat</h4><span class='small' style='opacity:1.0'>0 People online</span>
+			</div>
+			<div class='row p-0 m-0 bg-white'>
+				<div class='col-2 bg-light' id='users' style='height:25%'>
+					<ul class='container px-3 py-3 text-left' style='overflow-y:auto;list-style:none;opacity:1.0;height:100%'>
+						<li><mark class=''>Player1</mark></li>
+						<li><div>Player2</div></li>
+						<li><div>Plaasdfasdfsdfa3</div></li>
+						<li><div>Player4</div></li>
+						<li><div>Player4</div></li>
+						<li><div>Player4</div></li>
+						<li><div>Player4</div></li>
+						<li><div>Player4</div></li>
+						<li><div>Player4</div></li>
+						<li><div>Player4</div></li>
+						<li><div>Player4</div></li>
 					</ul>
-				<li>If a move is played so that it is to win a local board by the rules of normal tic-tac-toe, then the entire local board is marked as a victory for the player in the global board.</li>
-				<li>Once the outcome of a local board is decided (win or draw), no more moves may be played in that board. If a player is sent to such a board, then that player may play in any other board.</li>
-				<li>Game play ends when either a player wins the global board, or there are no legal moves remaining.</li>
-				<li><a href='https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe'>From Wikipedia</a></li>
-			</ul>
-			<hr/>
-			<!-- <br/> -->
-			<!-- <br/> -->
-			<div class='p-4 m-4 text-center'>
-				<a href='https://www.youtube.com/watch?v=ejTgl3cCyDo' style='color:#C70039;' class='font-weight-light' target='_blank'>Break the rules</a>
+				</div>
+				<div class='col-10 border rounded px-0 pt-2 pb-0 bg-light' id='main-chat'>
+					<ul class='container px-0 py-2' style='list-style:none;overflow-y:auto;overflow-x:hidden;height:20%'>
+						<li><div class='row'><div class='col-2 text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf1292&gt;</div><div class='col-10 text-left'>A sentence of no vlsdfgsdfgsdfg sdafue sdf</div></div></li>
+						<li><div class='row'><div class='col-2 text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf44444&gt;</div><div class='col-10 text-left'>A sentence of no vlsdfgsdfgsdfg sde sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue s sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf</div></div></li>
+				<li><div class='row'><div class='col-2 text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf&gt;</div><div class='col-10 text-left' >A sentence of no vlsdfgsdfgsdfg sdafue sdf</div></div></li>
+					</ul>
+					<div class='border row p-0 m-0 bg-secondary' id='chat-box'>
+						<div class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1' id='username' style='opacity:1.0'>&lt;asdf44444&gt;</div>
+						<div class='border col-10 p-0 bg-light' id='text-input'><input class='w-100' type='text' style='opacity:0.9'></input></div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </body>
 </html>

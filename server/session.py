@@ -1,6 +1,7 @@
 import os
 import json
 import numpy as np
+import time
 from random import shuffle
 from math import floor, ceil
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms
@@ -12,11 +13,16 @@ def start(room_id):
     emitBoard(room_id)
     
 def close(room_id):
-    storeBoard(room_id)
-    del sessions[room_id]
-    
+    try:
+        storeBoard(room_id)
+        del sessions[room_id]
+    except KeyError:
+        pass
 def formSession(room_id):
     users = room_id.split('-')
+    # cid|sid-cid|sid
+    client_names = [users[0].split('|')[0], users[1].split('|')[0]]
+    socket_names = [users[0].split('|')[1], users[1].split('|')[1]]
     rand = [0,1]
     shuffle(rand)
     print(users)
@@ -33,7 +39,8 @@ def formSession(room_id):
 - - - - - - - - -''', 'Reduced-Board': 
 '''- - -
 - - -
-- - -''',  'Turn':'x', 'Previous-Turn':'-', 'Move':0, users[rand[0]]:'x', users[rand[1]]:'o', 'Message':''}
+- - -''',  'Turn':'x', 'Previous-Turn':'-', 'Move':0, socket_names[rand[0]]:{'Piece':'x', 'Client-Name':client_names[rand[0]]}, 
+                                                      socket_names[rand[1]]:{'Piece':'o', 'Client-Name':client_names[rand[1]]}, 'Message':''}
    
 def emitBoard(room_id, target=None):
     if target==None:
@@ -41,7 +48,9 @@ def emitBoard(room_id, target=None):
     emit('board-data',sessions[room_id],room=target)
    
 def storeBoard(room_id):
-    with open('boards/' + room_id + '.json', 'w') as session_handle:
+    filename = room_id.split('-')[0].split('|')[0] + '-' + room_id.split('-')[1].split('|')[0] + '.' + str(time.time()) 
+    print(filename)
+    with open('boards/' + filename + '.json', 'w') as session_handle:
         session_handle.write(json.dumps(sessions[room_id]))
         session_handle.close()
     
@@ -58,7 +67,8 @@ def move(sid, position):
             if three_x_three_reduced[floor(position['x'] / 3)][floor(position['y'] / 3)] == '-':
                 sessions[room_id]['Reduced-Board'] = placePieceOn3X3(floor(position['x'] / 3), floor(position['y'] / 3), three_x_three_reduced, sessions[room_id]['Turn'])
                 if checkGridWon(three_x_three_reduced):
-                    sessions[room_id]['Message'] = 'Player ' + sessions[room_id]['Turn'] + 'wins!'
+                    sessions[room_id]['Message'] = 'Player ' + sessions[room_id][sid]['Client-Name'] +'(' + sessions[room_id]['Turn'] + ') wins!'
+                    storeBoard(room_id)
                 else:
                     swapTurn(room_id)
                     sessions[room_id]['Message'] = 'Section Won - Turn '+ sessions[room_id]['Turn'] 
@@ -73,7 +83,7 @@ def move(sid, position):
         emitBoard(room_id, target=sid)
     
 def validateTurn(sid, x, y, room_id):
-    if sessions[room_id]['Turn'] == sessions[room_id][sid]:
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
         if not isOverlap(x, y, room_id):
             if propperSegment(x, y, room_id):
                 return True

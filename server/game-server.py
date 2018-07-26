@@ -43,29 +43,30 @@ def on_connect():
 
 @socketio.on('disconnect')
 def on_disconnect():
-    user_id = request.sid
-    session_closed, room_id =  matchmake.checkDisconnect(user_id);
+    socket_id = request.sid
+    session_closed, room_id =  matchmake.checkDisconnect(socket_id);
     if session_closed:
         session.close(room_id)
-    print("Client disconnect: " + user_id)
+    print("Client disconnect: " + socket_id)
     
 @socketio.on('ready')
-def on_connect(ready):
-    user_id = request.sid
-    emit('ready',user_id)
-    session_formed, room_id =  matchmake.checkJoin(user_id);
+def on_connect(client_name):
+    socket_id = request.sid
+    client_id = client_name
+    emit('ready',socket_id)
+    session_formed, room_id =  matchmake.checkJoin(socket_id, client_id);
     if session_formed:
         session.start(room_id)
-    print("Client ready: " + user_id)
-    
+    print("Client ready: " + socket_id)
+ 
 @socketio.on('move')
 def on_disconnect(position):
     if len(rooms()) < 2:
         return
     print(str(position))
-    user_id = request.sid
-    session.move(user_id, position)
-    print("Client Moved: " + user_id + ' to ' + str(position['x']) + '-'+ str(position['y']))
+    socket_id = request.sid
+    session.move(socket_id, position)
+    print("Client Moved: " + socket_id + ' to ' + str(position['x']) + '-'+ str(position['y']))
  
 # if __name__ == '__main__':
 log = logging.getLogger('werkzeug')
