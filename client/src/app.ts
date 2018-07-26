@@ -13,9 +13,12 @@ function makeid() {
 
 window.onload = () => {
     //document.body.innerHTML = "<canvas id='game' width=500 height=500 style='border:solid black 1px'></canvas>";
-	if(document.cookie == undefined){
-		document.cookie = 'code='+makeid();
+	if(document.cookie == ''){
+		var code = prompt('message', makeid());
+		if (code == '') code = makeid();
+		document.cookie = 'code='+ code;
 	}
+	GameConstants.client_name = document.cookie.split('=')[1];
     var socket = new Socket();
 	var game = new GameSettings(socket);
 };
