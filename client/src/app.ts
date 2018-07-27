@@ -21,4 +21,7 @@ window.onload = () => {
 	GameConstants.client_name = document.cookie.split('=')[1];
     var socket = new Socket();
 	var game = new GameSettings(socket);
+	
+	var room_chat = new RoomChat(document.getElementById('room-chat'), socket);
+	var global_chat = new GlobalChat(document.getElementById('global-chat'), socket);
 };

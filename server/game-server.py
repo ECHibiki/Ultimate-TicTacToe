@@ -5,6 +5,7 @@ import logging
 
 import matchmake
 import session
+import chat
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, num_proxies=1)
@@ -14,7 +15,7 @@ def get_remote_addr(self, forwarded_for):
 socketio = SocketIO(app, ping_timeout=10, ping_interval=5)
 counter = 0
 @app.route('/')
-def game_route():
+def gameRoute():
     #return open("client/builds/game.js", 'r').read()
     global counter
     counter = counter + 1
@@ -22,27 +23,27 @@ def game_route():
     return open('index.html', 'r', encoding='cp932', errors='ignore').read()
     
 @app.route('/<path:path>')
-def rsc_route(path):
+def rscRoute(path):
     return send_from_directory('',path)
 
 @app.route('/sprites/<path:path>')
-def spr_route(path):
+def spriteRoute(path):
     return send_from_directory('sprites', path)
     
 @socketio.on('message')
-def handle_message(message):
+def handleMessage(message):
     print('received message: ' + message)     
     
 @socketio.on('json')
-def handle_json(json):
+def handleJSON(json):
     print('received json: ' + str(json))
         
 @socketio.on('connect')
-def on_connect():
+def onConnect():
     print("Client connected: " + request.sid)
 
 @socketio.on('disconnect')
-def on_disconnect():
+def onDisconnect():
     socket_id = request.sid
     session_closed, room_id =  matchmake.checkDisconnect(socket_id);
     if session_closed:
@@ -50,7 +51,7 @@ def on_disconnect():
     print("Client disconnect: " + socket_id)
     
 @socketio.on('ready')
-def on_connect(client_name):
+def onConnect(client_name):
     socket_id = request.sid
     client_id = client_name
     emit('ready',socket_id)
@@ -60,13 +61,30 @@ def on_connect(client_name):
     print("Client ready: " + socket_id)
  
 @socketio.on('move')
-def on_disconnect(position):
+def onMove(position):
     if len(rooms()) < 2:
         return
     print(str(position))
     socket_id = request.sid
     session.move(socket_id, position)
     print("Client Moved: " + socket_id + ' to ' + str(position['x']) + '-'+ str(position['y']))
+    
+@socketio.on('global-message')
+def onGlobalMessage(g_message):
+    print('global: ' + str(g_message))
+    chat.globalMessage(g_message)
+    
+@socketio.on('global-fill')
+def onGlobalMessage(f_message):
+    socket_id = request.sid
+    print('fill chat: ' + str(socket_id))
+    chat.returnLogs(socket_id)
+
+@socketio.on('room-message')
+def onRoomMessage(r_message):
+    print('room: ' + str(r_message))
+    chat.roomMessage(r_message)
+
  
 # if __name__ == '__main__':
 log = logging.getLogger('werkzeug')

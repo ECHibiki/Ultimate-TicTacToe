@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <title>Ultimate TicTacToe</title>
-	<script src="app.js?44r5666"></script>
+	<script src="app.js?665665dg"></script>
     <link rel="stylesheet" href="app.css" type="text/css" />
 </head>
 <body style='background-color:rgb(234, 188, 76)'>
@@ -34,7 +34,7 @@
 						<a class="nav-link" id='rules-tab' data-toggle='tab' href="#rules" role='tab' aria-controls='rules' aria-selected='false'>Rules</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active" id='chat-tab' data-toggle='tab' href="#chat" role='tab' aria-controls='chat' aria-selected='true'>Chat</a>
+						<a class="nav-link active" id='chat-tab' data-toggle='tab' href="#room-chat" role='tab' aria-controls='room-chat' aria-selected='true'>Chat</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" id='settings-tab' data-toggle='tab' href="#settings" role='tab' aria-controls='settings' aria-selected='false'>Settings</a>
@@ -61,24 +61,23 @@
 						<!-- <br/> -->
 						<!-- <br/> -->
 					</div>	
-					<div id='chat' class='tab-pane fade show active' role='tabpanel' aria-labelledby='chat-tab' style=''>
+					<div id='room-chat' class='tab-pane fade show active' role='tabpanel' aria-labelledby='chat-tab' style=''>
 						<h2 class='text-center'>Room Chat</h2>
-						
-						<div class='border-dark rounded bg-secondary mx-0 mt-0 mb-2' id='global-chat' style='opacity:1.0'>
-							<div class='container border px-4 py-2 bg-white' id='upper-info'>
+						<div class='border-dark rounded bg-secondary mx-0 mt-0 mb-2' id='room-chat-details' style='opacity:1.0'>
+							<div class='container border px-4 py-2 bg-white' id='room-upper-info'>
 								<h4 style='opacity:1.0 dispaly-4'>ROOM NAME HERE</h4>
 								<span class='small' style='opacity:1.0'>CID1 VS CID2</span>
 							</div>
 							<div class='row p-0 m-0 bg-white'>
-								<div class='col-12 border rounded px-0 pt-2 pb-0 bg-light' id='main-chat'>
-									<ul class='container pl-0 pr-2 py-2' style='list-style:none;overflow-y:auto;overflow-x:hidden;height:%'>
+								<div class='col-12 border rounded px-0 pt-2 pb-0 bg-light' id='room-chat-log'>
+									<ul class='container pl-0 pr-2 py-2' style='list-style:none;overflow-y:auto;overflow-x:hidden;height:21.6%'>
 										<li><div class='row'><div class='col-3 border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf1292&gt;</div><div class='col-9 text-left'>A sentence of no vlsdfgsdfgsdfg sdafue sdf</div></div></li>
 										<li><div class='row'><div class='col-3 border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf44444&gt;</div><div class='col-9 text-left'>A sentence of no vlsdfgsdfgsdfg sde sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue s sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf</div></div></li>
 										<li><div class='col-12 px-4 py-2 text-left font-italic'>Game did some crzy stuff</div></li>
 									</ul>
-								<div class='border rounded row p-0 m-0 bg-light' id='chat-box'>
-									<a class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1 btn active' href="javascript:void();" role='button' aria-pressed='true' id='username' style='opacity:1.0'>&lt;asdf44444&gt;</a>
-										<div class='border col-10 p-0 bg-light' id='text-input'><input class='w-100' type='text' style='opacity:0.9'></div>
+								<div class='border rounded row p-0 m-0 bg-light' id='room-chat-box'>
+									<a class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1 btn active' href="javascript:void();" role='button' aria-pressed='true' id='room-username' style='opacity:1.0'>&lt;asdf44444&gt;</a>
+										<div class='border col-10 p-0 bg-light' id='room-text-input'><input class='w-100' type='text' style='opacity:0.9'></div>
 									</div>
 								</div>
 							</div>
@@ -99,12 +98,12 @@
 		</div>
 		<hr/>
 		<div class='border-dark rounded bg-secondary mx-0 mt-0 mb-2' id='global-chat' style='opacity:0.95'>
-			<div class='container border px-4 py-2 bg-white' id='upper-info'>
+			<div class='container border px-4 py-2 bg-white' id='global-upper-info'>
 				<h4 style='opacity:1.0 dispaly-4'>Global Chat</h4>
 				<span class='small' style='opacity:1.0'>0 People online</span>
 			</div>
-			<div class='row p-0 m-0 bg-white'>
-				<div class='col-2 bg-light' id='users' style='height:25%'>
+			<div class='row p-0 m-0 bg-white' id='global-chat-details'>
+				<div class='col-2 bg-light' id='global-users' style='height:29%'>
 					<ul class='container px-3 py-3 text-left' style='overflow-y:auto;list-style:none;opacity:1.0;height:100%'>
 						<li><mark class=''>Player1</mark></li>
 						<li><div>Player2</div></li>
@@ -119,15 +118,15 @@
 						<li><div>Player4</div></li>
 					</ul>
 				</div>
-				<div class='col-10 border rounded px-0 pt-2 pb-0 bg-light' id='main-chat'>
-					<ul class='container pl-0 pr-2 py-2' style='list-style:none;overflow-y:auto;overflow-x:hidden;height:82%'>
+				<div class='col-10 border rounded px-0 pt-2 pb-0 bg-light' id='global-chat-log'>
+					<ul class='container pl-0 pr-2 py-2' style='list-style:none;overflow-y:auto;overflow-x:hidden;height:25%'>
 						<li><div class='row'><div class='col-2  border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf1292&gt;</div><div class='col-10 text-left'>A sentence of no vlsdfgsdfgsdfg sdafue sdf</div></div></li>
 						<li><div class='row'><div class='col-2  border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf44444&gt;</div><div class='col-10 text-left'>A sentence of no vlsdfgsdfgsdfg sde sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue s sdafue sdf sdafue sdf sdafue sdf sdafue sdf sdafue sdf</div></div></li>
 						<li><div class='row'><div class='col-2  border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;asdf&gt;</div><div class='col-10 text-left' >A sentence of no vlsdfgsdfgsdfg sdafue sdf</div></div></li>
 					</ul>
-					<div class='border rounded row p-0 m-0 bg-light' id='chat-box'>
+					<div class='border rounded row p-0 m-0 bg-light' id='global-chat-box'>
 						<a class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1 btn active' href="javascript:void();" role='button' aria-pressed='true' id='username' style='opacity:1.0'>&lt;asdf44444&gt;</a>
-						<div class='border col-10 p-0 bg-light' id='text-input'><input class='w-100' type='text' style='opacity:0.9'></div>
+						<div class='border col-10 p-0 bg-light' id='global-text-input'><input class='w-100' type='text' style='opacity:0.9'></div>
 					</div>
 				</div>
 			</div>

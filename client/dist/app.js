@@ -1,4 +1,14 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var GameConstants = /** @class */ (function () {
     function GameConstants() {
     }
@@ -188,6 +198,89 @@ var GameSettings = /** @class */ (function () {
     }
     return GameSettings;
 }());
+var Chat = /** @class */ (function () {
+    function Chat(chat_object, websocket) {
+        this.main_chat_box = null;
+        this.chat_socket = null;
+        if (chat_object == null) {
+            console.log('chat_object NULL');
+            return;
+        }
+        this.main_chat_box = chat_object;
+        this.chat_socket = websocket;
+    }
+    Chat.prototype.initializeSend = function (text_input_element, label) {
+        var _this = this;
+        text_input_element.addEventListener('keydown', function (event) {
+            if (event.keyCode === 13) {
+                _this.chat_socket.sendSocket(label, { 'contents': text_input_element.value, 'sender': document.cookie.split('=')[1] });
+                text_input_element.value = '';
+            }
+        });
+    };
+    Chat.prototype.addTextToChatbox = function (chat_list, name_width, response, sender) {
+        if (chat_list == null) {
+            console.log('chat_list NULL');
+            return;
+        }
+        var list_el = document.createElement('LI');
+        list_el.innerHTML = "<div class='row'>\n\t\t\t\t\t\t\t\t<div class='col-" + name_width + " border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;" + sender + "&gt;</div>\n\t\t\t\t\t\t\t\t<div class='col-" + (12 - name_width) + " text-left'>" + response + "</div>\n\t\t\t\t\t\t\t</div>";
+        chat_list.appendChild(list_el);
+        var scroll_mx = chat_list.scrollHeight;
+        chat_list.scrollTo(0, scroll_mx);
+    };
+    return Chat;
+}());
+var GlobalChat = /** @class */ (function (_super) {
+    __extends(GlobalChat, _super);
+    function GlobalChat(chat_object, websocket) {
+        var _this = this;
+        if (chat_object == null) {
+            console.log('chat_object NULL');
+            return;
+        }
+        _this = _super.call(this, chat_object, websocket) || this;
+        _this.initializeSend(chat_object.getElementsByTagName('INPUT')[0], 'global-message');
+        _this.chat_socket.socketListener('global-message', function (response) {
+            var name_col_width = 2;
+            _this.addTextToChatbox(chat_object.getElementsByTagName('UL')[1], name_col_width, response['contents'], response['sender']);
+        });
+        _this.fillBox();
+        return _this;
+    }
+    GlobalChat.prototype.fillBox = function () {
+        var _this = this;
+        this.chat_socket.socketListener('global-fill', function (response_list) {
+            var string_to_add = "";
+            response_list.forEach(function (response_obj, ind) {
+                string_to_add += "<li><div class='row'>\n\t\t\t\t\t\t\t\t<div class='col-" + 2 + " border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>" + response_obj['sender'] + "</div>\n\t\t\t\t\t\t\t\t<div class='col-" + 10 + " text-left'>" + response_obj['contents'] + "</div>\n\t\t\t\t\t\t\t</div></li>";
+            });
+            _this.main_chat_box.getElementsByTagName('UL')[1].innerHTML = string_to_add;
+            var scroll_mx = _this.main_chat_box.getElementsByTagName('UL')[1].scrollHeight;
+            _this.main_chat_box.getElementsByTagName('UL')[1].scrollTo(0, scroll_mx);
+        });
+        this.chat_socket.sendSocket('global-fill', '1');
+    };
+    return GlobalChat;
+}(Chat));
+var RoomChat = /** @class */ (function (_super) {
+    __extends(RoomChat, _super);
+    function RoomChat(chat_object, websocket) {
+        var _this = this;
+        if (chat_object == null) {
+            console.log('chat_object NULL');
+            return;
+        }
+        _this = _super.call(this, chat_object, websocket) || this;
+        _this.initializeSend(chat_object.getElementsByTagName('INPUT')[0], 'room-message');
+        _this.chat_socket.socketListener('room-message', function (response) {
+            var name_col_width = 3;
+            _this.addTextToChatbox(chat_object.getElementsByTagName('UL')[0], name_col_width, response['contents'], response['sender']);
+        });
+        return _this;
+    }
+    return RoomChat;
+}(Chat));
 //From: https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 function makeid() {
     var text = "";
@@ -207,10 +300,7 @@ window.onload = function () {
     GameConstants.client_name = document.cookie.split('=')[1];
     var socket = new Socket();
     var game = new GameSettings(socket);
+    var room_chat = new RoomChat(document.getElementById('room-chat'), socket);
+    var global_chat = new GlobalChat(document.getElementById('global-chat'), socket);
 };
-var Chat = /** @class */ (function () {
-    function Chat() {
-    }
-    return Chat;
-}());
 //# sourceMappingURL=app.js.map
