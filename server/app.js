@@ -13,6 +13,7 @@ var GameConstants = /** @class */ (function () {
     function GameConstants() {
     }
     GameConstants.client_name = '';
+    GameConstants.socket_id = '';
     return GameConstants;
 }());
 var Socket = /** @class */ (function () {
@@ -74,7 +75,6 @@ var GameSettings = /** @class */ (function () {
             //socket handlers
             socket.socketListener('ready', function (data) {
                 _this.info_text.setText('Searching for players...');
-                console.log(data);
                 _this.client_id = data;
             });
             socket.socketListener('disconnect', function (data) {
@@ -209,13 +209,19 @@ var Chat = /** @class */ (function () {
         this.main_chat_box = chat_object;
         this.chat_socket = websocket;
     }
-    Chat.prototype.initializeSend = function (text_input_element, label) {
+    Chat.prototype.initializeChat = function (text_input_element, label) {
         var _this = this;
         text_input_element.addEventListener('keydown', function (event) {
             if (event.keyCode === 13) {
-                _this.chat_socket.sendSocket(label, { 'contents': text_input_element.value, 'sender': document.cookie.split('=')[1] });
+                _this.chat_socket.sendSocket(label + '-client-message', { 'contents': text_input_element.value, 'sender': GameConstants.client_name });
                 text_input_element.value = '';
             }
+        });
+        var name_tab = document.getElementById(label + '-username');
+        name_tab.textContent = '<' + GameConstants.client_name + '(' + GameConstants.socket_id.substr(0, 4) + ')>';
+        name_tab.addEventListener('click', function (event) {
+            _this.chat_socket.sendSocket(label + '-client-message', { 'contents': text_input_element.value, 'sender': GameConstants.client_name });
+            text_input_element.value = '';
         });
     };
     Chat.prototype.addTextToChatbox = function (chat_list, name_width, response, sender) {
@@ -225,6 +231,17 @@ var Chat = /** @class */ (function () {
         }
         var list_el = document.createElement('LI');
         list_el.innerHTML = "<div class='row'>\n\t\t\t\t\t\t\t\t<div class='col-" + name_width + " border-right text-right text-truncate font-weight-bold' style='opacity:1.0'>&lt;" + sender + "&gt;</div>\n\t\t\t\t\t\t\t\t<div class='col-" + (12 - name_width) + " text-left'>" + response + "</div>\n\t\t\t\t\t\t\t</div>";
+        chat_list.appendChild(list_el);
+        var scroll_mx = chat_list.scrollHeight;
+        chat_list.scrollTo(0, scroll_mx);
+    };
+    Chat.prototype.addServerMessageToChatbox = function (chat_list, response) {
+        if (chat_list == null) {
+            console.log('chat_list NULL');
+            return;
+        }
+        var list_el = document.createElement('LI');
+        list_el.innerHTML = "<li>\n\t\t\t\t\t\t\t\t<div class='col-12 px-4 py-2 text-left font-italic'>" + response + "\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>";
         chat_list.appendChild(list_el);
         var scroll_mx = chat_list.scrollHeight;
         chat_list.scrollTo(0, scroll_mx);
@@ -240,14 +257,33 @@ var GlobalChat = /** @class */ (function (_super) {
             return;
         }
         _this = _super.call(this, chat_object, websocket) || this;
-        _this.initializeSend(chat_object.getElementsByTagName('INPUT')[0], 'global-message');
-        _this.chat_socket.socketListener('global-message', function (response) {
-            var name_col_width = 2;
-            _this.addTextToChatbox(chat_object.getElementsByTagName('UL')[1], name_col_width, response['contents'], response['sender']);
-        });
+        _this.initializeChat(chat_object.getElementsByTagName('INPUT')[0], 'global');
+        _this.handleGlobalChatMessages();
+        _this.enableGlobalChatInfo();
         _this.fillBox();
         return _this;
     }
+    GlobalChat.prototype.handleGlobalChatMessages = function () {
+        var _this = this;
+        this.chat_socket.socketListener('global-client-message', function (response) {
+            var name_col_width = 2;
+            _this.addTextToChatbox(_this.main_chat_box.getElementsByTagName('UL')[1], name_col_width, response['contents'], response['sender']);
+        });
+    };
+    GlobalChat.prototype.enableGlobalChatInfo = function () {
+        var _this = this;
+        this.chat_socket.socketListener('global-chat-setup', function (chatter_list) {
+            document.getElementById('global-count').textContent = chatter_list.length + ' People Online';
+            var player_list = _this.main_chat_box.getElementsByTagName('UL')[0];
+            var player_list_text = "<li><mark class='' id='current-user'>" + GameConstants.client_name + "(" + GameConstants.socket_id.substr(0, 4) + ")</mark></li>";
+            chatter_list.forEach(function (el) {
+                if (el == GameConstants.client_name + "(" + GameConstants.socket_id.substr(0, 4) + ")")
+                    return;
+                player_list_text += "<li><div>" + el + "</div></li>";
+            });
+            player_list.innerHTML = player_list_text;
+        });
+    };
     GlobalChat.prototype.fillBox = function () {
         var _this = this;
         this.chat_socket.socketListener('global-fill', function (response_list) {
@@ -272,15 +308,46 @@ var RoomChat = /** @class */ (function (_super) {
             return;
         }
         _this = _super.call(this, chat_object, websocket) || this;
-        _this.initializeSend(chat_object.getElementsByTagName('INPUT')[0], 'room-message');
-        _this.chat_socket.socketListener('room-message', function (response) {
-            var name_col_width = 3;
-            _this.addTextToChatbox(chat_object.getElementsByTagName('UL')[0], name_col_width, response['contents'], response['sender']);
-        });
+        _this.initializeChat(chat_object.getElementsByTagName('INPUT')[0], 'room');
+        _this.handleRoomMessages();
+        _this.enableRoomChatInfo();
         return _this;
     }
+    RoomChat.prototype.handleRoomMessages = function () {
+        var _this = this;
+        this.chat_socket.socketListener('room-client-message', function (response) {
+            var name_col_width = 3;
+            _this.addTextToChatbox(_this.main_chat_box.getElementsByTagName('UL')[0], name_col_width, response['contents'], response['sender']);
+        });
+        this.chat_socket.socketListener('room-server-message', function (response) {
+            _this.addServerMessageToChatbox(_this.main_chat_box.getElementsByTagName('UL')[0], response['contents']);
+        });
+    };
+    RoomChat.prototype.enableRoomChatInfo = function () {
+        this.chat_socket.socketListener('room-chat-setup', function (response_list) {
+            document.getElementById('room-name').textContent = 'GameID: ' + response_list['Room'];
+            var viewers = '';
+            response_list['Viewers'].forEach(function (ele, ind) {
+                if (ind == 0) {
+                    viewers = ele;
+                    return;
+                }
+                viewers += ', ' + ele;
+            });
+            document.getElementById('challengers').textContent = viewers;
+        });
+        // this.chat_socket.sendSocket('room-chat-setup', GameConstants.client_name);
+    };
     return RoomChat;
 }(Chat));
+var Settings = /** @class */ (function () {
+    function Settings() {
+        document.getElementById('name-set').addEventListener('click', function (event) {
+            document.cookie = 'code=' + prompt('set new name(available on refresh): ', document.cookie.split('=')[1]);
+        });
+    }
+    return Settings;
+}());
 //From: https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 function makeid() {
     var text = "";
@@ -299,8 +366,12 @@ window.onload = function () {
     }
     GameConstants.client_name = document.cookie.split('=')[1];
     var socket = new Socket();
+    socket.socketListener('connected', function (sid) {
+        GameConstants.socket_id = sid;
+        var room_chat = new RoomChat(document.getElementById('room-chat'), socket);
+        var global_chat = new GlobalChat(document.getElementById('global-chat'), socket);
+        var settings = new Settings();
+    });
     var game = new GameSettings(socket);
-    var room_chat = new RoomChat(document.getElementById('room-chat'), socket);
-    var global_chat = new GlobalChat(document.getElementById('global-chat'), socket);
 };
 //# sourceMappingURL=app.js.map

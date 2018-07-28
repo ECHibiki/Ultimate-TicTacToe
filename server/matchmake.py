@@ -1,11 +1,22 @@
 from flask import Flask, request
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms
 
-_rooms = []
+_rooms = {}
+sid_cid_pairs = {}
+
+# from https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
+import string
+import random
+
+import misc
+
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def checkJoin(sid,client_id):
     waiting_list_handle = open('waiting', 'r')
     waiting_list_text = waiting_list_handle.read()
+    sid_cid_pairs[sid] = client_id
     if waiting_list_text.find('\n') == -1:
         addSID(sid,client_id)
         return False, None
@@ -15,19 +26,21 @@ def checkJoin(sid,client_id):
         return True, formRoom(waiting_list_text.split('\n')[0].split('-')[0], waiting_list_text.split('\n')[0].split('-')[1], sid, client_id)
 
 def checkDisconnect(sid):
-    clear = False
-    room_to_clear = ""
-    for room in _rooms:
-        if room.find(sid) > -1:
-            clear = True
-            room_to_clear = room
-            break
-    if clear:
-        return True, clearRoom(room_to_clear, sid)
+    room_to_clear = findRoomBySID(sid)
+    if room_to_clear != '':
+        return True, room_to_clear
     else:
         clearSID(sid)
         return False, None
 
+def findRoomBySID(sid):
+    room_to_clear = ""
+    for room in _rooms:
+        if room.find(sid) > -1:
+            found = True
+            room_to_clear = room
+            break
+    return room_to_clear
         
 def addSID(sid, cid):
     waiting_list_handle = open('waiting', 'a+')
@@ -60,19 +73,13 @@ def formRoom(sid1, cid1, sid2, cid2):
     join_room(room_id, sid=sid2)
     emit('join', cid1 + ' and ' + cid2 + ' have entered the room.', room=room_id)
     clearSID(sid1)
-    _rooms.append(room_id)
+    _rooms[room_id] = {'Code': id_generator(), 'Viewers':[misc.generateNameTag(sid1, cid1), misc.generateNameTag(sid2, cid2)]}
     return room_id
     
 def clearRoom(room_to_clear, sid):
-    print(str(_rooms))
-    print(room_to_clear)
-    print(sid)
-    emit('broken', sid + ' has left the room: ' + sid, room=room_to_clear)
-    close_room(room_to_clear)
-    try:
-        _rooms.remove(room_to_clear)
-    except ValueError:
-        pass
-    return room_to_clear
+    emit('broken', sid_cid_pairs[sid] + ' has left the room: ' + sid, room=room_to_clear)
+    del _rooms[room_to_clear]
+    del sid_cid_pairs[sid]
+    # close_room(room_to_clear)
 
-    
+

@@ -6,6 +6,10 @@ from random import shuffle
 from math import floor, ceil
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms
 
+import matchmake
+import chat
+import misc
+
 sessions = {}
 
 def start(room_id):
@@ -18,6 +22,7 @@ def close(room_id):
         del sessions[room_id]
     except KeyError:
         pass
+        
 def formSession(room_id):
     users = room_id.split('-')
     # cid|sid-cid|sid
@@ -40,7 +45,8 @@ def formSession(room_id):
 '''- - -
 - - -
 - - -''',  'Turn':'x', 'Previous-Turn':'-', 'Move':0, socket_names[rand[0]]:{'Piece':'x', 'Client-Name':client_names[rand[0]]}, 
-                                                      socket_names[rand[1]]:{'Piece':'o', 'Client-Name':client_names[rand[1]]}, 'Message':''}
+                                                      socket_names[rand[1]]:{'Piece':'o', 'Client-Name':client_names[rand[1]]}, 
+                                                      'Message':''}
    
 def emitBoard(room_id, target=None):
     if target==None:
@@ -48,7 +54,7 @@ def emitBoard(room_id, target=None):
     emit('board-data',sessions[room_id],room=target)
    
 def storeBoard(room_id):
-    filename = room_id.split('-')[0].split('|')[0] + '-' + room_id.split('-')[1].split('|')[0] + '.' + str(time.time()) 
+    filename = matchmake._rooms[room_id]['Code'] + '.' + str(time.time()) 
     print(filename)
     with open('boards/' + filename + '.json', 'w') as session_handle:
         session_handle.write(json.dumps(sessions[room_id]))
@@ -56,7 +62,10 @@ def storeBoard(room_id):
     
 def move(sid, position):
     room_id = determineRoom(sid)
+    #legal
     if validateTurn(sid, position['x'], position['y'], room_id):
+        chat.roomServerMessage(str(misc.generateNameTag(sid, sessions[room_id][sid]['Client-Name']))+ ' moved to ' +
+                                   str(position['x'] + 1) + ', ' + str(position['y'] + 1) , room_id)
         placePieceBoard(position['x'], position['y'], room_id)
         sessions[room_id]['Previous-Turn'] = str(position['x']) + "|" + str(position['y'])
         sessions[room_id]['Move'] = sessions[room_id]['Move'] + 1
@@ -67,7 +76,8 @@ def move(sid, position):
             if three_x_three_reduced[floor(position['x'] / 3)][floor(position['y'] / 3)] == '-':
                 sessions[room_id]['Reduced-Board'] = placePieceOn3X3(floor(position['x'] / 3), floor(position['y'] / 3), three_x_three_reduced, sessions[room_id]['Turn'])
                 if checkGridWon(three_x_three_reduced):
-                    sessions[room_id]['Message'] = 'Player ' + sessions[room_id][sid]['Client-Name'] +'(' + sessions[room_id]['Turn'] + ') wins!'
+                    sessions[room_id]['Message'] = 'Player ' + sessions[room_id][sid]['Client-Name'] +'(' + sessions[room_id]['Turn'] + ') wins!'                   
+                    chat.roomServerMessage(str(misc.generateNameTag(sid, sessions[room_id][sid]['Client-Name']))+ ' Wins.', room_id)
                     storeBoard(room_id)
                 else:
                     swapTurn(room_id)
@@ -79,6 +89,7 @@ def move(sid, position):
             sessions[room_id]['Message'] = ''
             swapTurn(room_id)
         emitBoard(room_id, target=room_id)
+    #illegal
     else:
         emitBoard(room_id, target=sid)
     

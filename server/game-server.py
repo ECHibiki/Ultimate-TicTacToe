@@ -40,6 +40,8 @@ def handleJSON(json):
         
 @socketio.on('connect')
 def onConnect():
+    print(request.sid)
+    emit('connected', request.sid)
     print("Client connected: " + request.sid)
 
 @socketio.on('disconnect')
@@ -48,6 +50,9 @@ def onDisconnect():
     session_closed, room_id =  matchmake.checkDisconnect(socket_id);
     if session_closed:
         session.close(room_id)
+        chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room_id)
+        chat.clearChatter(socket_id)
+        matchmake.clearRoom(room_id, socket_id)    
     print("Client disconnect: " + socket_id)
     
 @socketio.on('ready')
@@ -59,6 +64,8 @@ def onConnect(client_name):
     if session_formed:
         session.start(room_id)
     print("Client ready: " + socket_id)
+    chat.roomChatInfo(socket_id, client_id)
+    chat.globalChatInfo(socket_id, client_id)
  
 @socketio.on('move')
 def onMove(position):
@@ -69,10 +76,11 @@ def onMove(position):
     session.move(socket_id, position)
     print("Client Moved: " + socket_id + ' to ' + str(position['x']) + '-'+ str(position['y']))
     
-@socketio.on('global-message')
+@socketio.on('global-client-message')
 def onGlobalMessage(g_message):
     print('global: ' + str(g_message))
-    chat.globalMessage(g_message)
+    socket_id = request.sid
+    chat.globalMessage(socket_id, g_message)
     
 @socketio.on('global-fill')
 def onGlobalMessage(f_message):
@@ -80,10 +88,11 @@ def onGlobalMessage(f_message):
     print('fill chat: ' + str(socket_id))
     chat.returnLogs(socket_id)
 
-@socketio.on('room-message')
+@socketio.on('room-client-message')
 def onRoomMessage(r_message):
     print('room: ' + str(r_message))
-    chat.roomMessage(r_message)
+    socket_id = request.sid
+    chat.roomMessage(socket_id, r_message)
 
  
 # if __name__ == '__main__':
