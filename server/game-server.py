@@ -13,13 +13,9 @@ def get_remote_addr(self, forwarded_for):
     if len(forwarded_for) >= self.num_proxies:
         return forwarded_for[-self.num_proxies]
 socketio = SocketIO(app, ping_timeout=10, ping_interval=5)
-counter = 0
 @app.route('/')
 def gameRoute():
     #return open("client/builds/game.js", 'r').read()
-    global counter
-    counter = counter + 1
-    print('Number of connections to / : ' + str(counter))
     return open('index.html', 'r', encoding='cp932', errors='ignore').read()
     
 @app.route('/<path:path>')
@@ -40,7 +36,6 @@ def handleJSON(json):
         
 @socketio.on('connect')
 def onConnect():
-    print(request.sid)
     emit('connected', request.sid)
     print("Client connected: " + request.sid)
 
@@ -71,26 +66,22 @@ def onConnect(client_name):
 def onMove(position):
     if len(rooms()) < 2:
         return
-    print(str(position))
     socket_id = request.sid
     session.move(socket_id, position)
     print("Client Moved: " + socket_id + ' to ' + str(position['x']) + '-'+ str(position['y']))
     
 @socketio.on('global-client-message')
 def onGlobalMessage(g_message):
-    print('global: ' + str(g_message))
     socket_id = request.sid
     chat.globalMessage(socket_id, g_message)
     
 @socketio.on('global-fill')
 def onGlobalMessage(f_message):
     socket_id = request.sid
-    print('fill chat: ' + str(socket_id))
     chat.returnLogs(socket_id)
 
 @socketio.on('room-client-message')
 def onRoomMessage(r_message):
-    print('room: ' + str(r_message))
     socket_id = request.sid
     chat.roomMessage(socket_id, r_message)
 

@@ -7,7 +7,6 @@ import misc
 chatters = []
 
 def roomMessage(sid, message):
-    print(rooms()[-1])
     if message['contents'].strip() == '' or message['sender'].strip() == '': 
         return
     emit('room-client-message', {'contents': removeHazzards(message['contents']), 'sender': removeHazzards(misc.generateNameTag(sid, message['sender']))}, room=rooms()[-1])
@@ -17,11 +16,9 @@ def roomServerMessage(message, room_id):
  
 def roomChatInfo(sid, cid):
     room_name = rooms()[-1]
-    print(matchmake._rooms)
     try:
         all_viewers = matchmake._rooms[room_name]['Viewers']
         room_code = matchmake._rooms[room_name]['Code']
-        print(all_viewers)
         emit('room-chat-setup', {'Room':room_code, 'Viewers':all_viewers}, room=room_name)
     except KeyError:
         emit('room-chat-setup', {'Room':'Forming...', 'Viewers':[misc.generateNameTag(sid, cid)]}, room=room_name)
@@ -31,7 +28,6 @@ def globalMessage(sid, message):
     if message['contents'].strip() == '' or message['sender'].strip() == '': 
         return
     log('chat/global.log', '<' + misc.generateNameTag(sid, message['sender'].replace(' ', '%20')) + '> ' + message['contents'].strip())
-    print (str({'contents': removeHazzards(message['contents']), 'sender': removeHazzards(misc.generateNameTag(sid, message['sender']))}))
     emit('global-client-message', {'contents': removeHazzards(message['contents']), 'sender': removeHazzards(misc.generateNameTag(sid, message['sender']))},broadcast=True)
 
 def globalChatInfo(sid, cid):

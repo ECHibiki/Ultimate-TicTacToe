@@ -30,8 +30,6 @@ def formSession(room_id):
     socket_names = [users[0].split('|')[1], users[1].split('|')[1]]
     rand = [0,1]
     shuffle(rand)
-    print(users)
-    print(rand)
     sessions[room_id] = { 'Board':
 '''- - - - - - - - -
 - - - - - - - - -
@@ -55,7 +53,6 @@ def emitBoard(room_id, target=None):
    
 def storeBoard(room_id):
     filename = matchmake._rooms[room_id]['Code'] + '.' + str(time.time()) 
-    print(filename)
     with open('boards/' + filename + '.json', 'w') as session_handle:
         session_handle.write(json.dumps(sessions[room_id]))
         session_handle.close()

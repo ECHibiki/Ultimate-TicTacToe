@@ -22,7 +22,6 @@ def checkJoin(sid,client_id):
         return False, None
     else:
         #grabs 1st entry with a split and seperates written client ID and socketID
-        print(waiting_list_text)
         return True, formRoom(waiting_list_text.split('\n')[0].split('-')[0], waiting_list_text.split('\n')[0].split('-')[1], sid, client_id)
 
 def checkDisconnect(sid):
@@ -60,7 +59,6 @@ def clearSID(sid):
         if item.find(sid) > -1:
             del waiting_list_arr[index]
     waiting_list_text =  '\n'.join(waiting_list_arr)
-    #print('text: ' + waiting_list_text)
     
     waiting_list_handle = open('waiting', 'w')
     waiting_list_handle.write(waiting_list_text)
