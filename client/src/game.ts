@@ -5,6 +5,7 @@ class GameSettings{
 		var info_text:any = null;
 		var client_id:string = ''
 		var players_turn:boolean = false
+		var place_in_progress:boolean = false
 		var player_piece:string = ''
 		var board_width:number = 500
 		var board_height:number = 500
@@ -48,9 +49,7 @@ class GameSettings{
 			//socket handlers
 			socket.socketListener('ready', (data:any)=>{
 				this.info_text.setText('Searching for players...');
-				console.log(data)
-				this.client_id = data
-				
+				this.client_id = data;						
 			});
 			socket.socketListener('disconnect', (data:any)=>{
 				this.info_text.setText('Game server is offline');
@@ -76,6 +75,7 @@ class GameSettings{
 
 				//turns
 				if(data[this.client_id]['Piece'] == data['Turn']){
+					this.place_in_progress = false;
 					this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move'])
 					this.players_turn = true
 					this.player_piece = data['Turn']	
@@ -134,6 +134,7 @@ class GameSettings{
 			//input handlers
 			this.input.on('pointerdown',(event:MouseEvent)=>{
 				if(this.players_turn){
+					this.place_in_progress = true;
 					let y = event.y;
 					if(y > board_height - 1) y = board_height - 1;
 					let x = event.x;
@@ -148,7 +149,7 @@ class GameSettings{
 			});
 			//input handlers
 			this.input.on('pointermove',(event:MouseEvent)=>{
-				if(this.players_turn){
+				if(this.players_turn && this.place_in_progress == false){
 					let y = event.y;
 					if(y > board_height - 1) y = board_height - 1;
 					let x = event.x;

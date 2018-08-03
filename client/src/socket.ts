@@ -1,10 +1,16 @@
 class Socket {
-	url:string = "http://144.172.129.226:3231"
+	url:string = "http://96.22.104.33:32232"
 	websocket:any = null
 
 	constructor(){	
 		this.websocket = io.connect(this.url, {reconnection: false });
-		this.socketListener('message', (data:any)=>{console.log(data)});
+		this.socketListener('message', (data:any)=>{
+			console.log(data);
+		});
+		this.socketListener('disconnect', (data:any)=>{
+			console.log(data);
+			this.websocket.disconnect();
+		});
 	}
 	
 	sendSocket(event:string, arg:string):void{

@@ -8,11 +8,8 @@ import session
 import chat
 
 app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app, num_proxies=1)
-def get_remote_addr(self, forwarded_for):
-    if len(forwarded_for) >= self.num_proxies:
-        return forwarded_for[-self.num_proxies]
-socketio = SocketIO(app, ping_timeout=10, ping_interval=5)
+app.secret_key = '2902u08uk;ljsdf;lkj09'
+socketio = SocketIO(app, ping_timeout=20, ping_interval=10, allow_upgrades=True, engineio_logger=False)
 @app.route('/')
 def gameRoute():
     #return open("client/builds/game.js", 'r').read()
@@ -26,13 +23,13 @@ def rscRoute(path):
 def spriteRoute(path):
     return send_from_directory('sprites', path)
     
-@socketio.on('message')
+@socketio.on('ping')
 def handleMessage(message):
     print('received message: ' + message)     
     
-@socketio.on('json')
-def handleJSON(json):
-    print('received json: ' + str(json))
+@socketio.on('pong')
+def handleJSON(message):
+    print('received message: ' + str(message))
         
 @socketio.on('connect')
 def onConnect():
@@ -42,11 +39,11 @@ def onConnect():
 @socketio.on('disconnect')
 def onDisconnect():
     socket_id = request.sid
+    chat.removeGlobalClient(socket_id)
     session_closed, room_id =  matchmake.checkDisconnect(socket_id);
     if session_closed:
         session.close(room_id)
         chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room_id)
-        chat.clearChatter(socket_id)
         matchmake.clearRoom(room_id, socket_id)    
     print("Client disconnect: " + socket_id)
     
@@ -88,5 +85,5 @@ def onRoomMessage(r_message):
  
 # if __name__ == '__main__':
 log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
-socketio.run(app, port=3231, host='0.0.0.0', debug=True)
+log.setLevel(logging.NOTSET)
+socketio.run(app, port=32232, host='0.0.0.0', debug=False)

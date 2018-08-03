@@ -76,8 +76,15 @@ def formRoom(sid1, cid1, sid2, cid2):
     
 def clearRoom(room_to_clear, sid):
     emit('broken', sid_cid_pairs[sid] + ' has left the room: ' + sid, room=room_to_clear)
-    del _rooms[room_to_clear]
-    del sid_cid_pairs[sid]
+    try:
+        del _rooms[room_to_clear]
+    except KeyError:
+        print(f'room {room_to_clear} already cleared')
+    try:
+        del sid_cid_pairs[sid]
+    except KeyError:
+        print(f'sid {sid} already cleared')
+        
     # close_room(room_to_clear)
 
 

@@ -18,10 +18,20 @@ window.onload = () => {
 		if (code == '') code = makeid();
 		document.cookie = 'code='+ code;
 	}
+
 	GameConstants.client_name = document.cookie.split('=')[1];
+
     var socket = new Socket();
-	var game = new GameSettings(socket);
+
+	socket.socketListener('connected', (sid:string)=>{
+		GameConstants.socket_id = sid;
+		
+		var room_chat = new RoomChat(document.getElementById('room-chat'), socket);
+		var global_chat = new GlobalChat(document.getElementById('global-chat'), socket);
+
+		var settings = new Settings();
+	});
+
 	
-	var room_chat = new RoomChat(document.getElementById('room-chat'), socket);
-	var global_chat = new GlobalChat(document.getElementById('global-chat'), socket);
+	var game = new GameSettings(socket);	
 };

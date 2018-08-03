@@ -51,7 +51,10 @@ def removeHazzards(line):
 def log(file, line):
     open(file, 'a').write(line + '\n')
     
-def clearChatter(sid):
-    cid = matchmake.sid_cid_pairs[sid]
-    del chatters[chatters.index(misc.generateNameTag(sid, cid))]
+def removeGlobalClient(sid):
+    try:
+        cid = matchmake.sid_cid_pairs[sid]
+        del chatters[chatters.index(misc.generateNameTag(sid, cid))]
+    except KeyError:
+        print(sid + ' key err');
     emit('global-chat-setup', chatters, broadcast=True)

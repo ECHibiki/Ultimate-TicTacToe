@@ -18,10 +18,17 @@ var GameConstants = /** @class */ (function () {
 }());
 var Socket = /** @class */ (function () {
     function Socket() {
-        this.url = "http://144.172.129.226:3231";
+        var _this = this;
+        this.url = "http://96.22.104.33:32232";
         this.websocket = null;
         this.websocket = io.connect(this.url, { reconnection: false });
-        this.socketListener('message', function (data) { console.log(data); });
+        this.socketListener('message', function (data) {
+            console.log(data);
+        });
+        this.socketListener('disconnect', function (data) {
+            console.log(data);
+            _this.websocket.disconnect();
+        });
     }
     Socket.prototype.sendSocket = function (event, arg) {
         this.websocket.emit(event, arg);
@@ -37,6 +44,7 @@ var GameSettings = /** @class */ (function () {
         var info_text = null;
         var client_id = '';
         var players_turn = false;
+        var place_in_progress = false;
         var player_piece = '';
         var board_width = 500;
         var board_height = 500;
@@ -98,6 +106,7 @@ var GameSettings = /** @class */ (function () {
                 var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
                 //turns
                 if (data[_this.client_id]['Piece'] == data['Turn']) {
+                    _this.place_in_progress = false;
                     _this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move']);
                     _this.players_turn = true;
                     _this.player_piece = data['Turn'];
@@ -158,6 +167,7 @@ var GameSettings = /** @class */ (function () {
             //input handlers
             this.input.on('pointerdown', function (event) {
                 if (_this.players_turn) {
+                    _this.place_in_progress = true;
                     var y = event.y;
                     if (y > board_height - 1)
                         y = board_height - 1;
@@ -173,7 +183,7 @@ var GameSettings = /** @class */ (function () {
             });
             //input handlers
             this.input.on('pointermove', function (event) {
-                if (_this.players_turn) {
+                if (_this.players_turn && _this.place_in_progress == false) {
                     var y = event.y;
                     if (y > board_height - 1)
                         y = board_height - 1;

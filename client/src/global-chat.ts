@@ -5,15 +5,35 @@ class GlobalChat extends Chat{
 			return;
 		}
 		super(chat_object, websocket)
-		this.initializeSend(<HTMLInputElement>chat_object.getElementsByTagName('INPUT')[0], 'global-message');
-		
-		this.chat_socket.socketListener('global-message', (response:any)=>{
-			var name_col_width:number = 2
-			this.addTextToChatbox(chat_object.getElementsByTagName('UL')[1], name_col_width, response['contents'], response['sender']);
-		});
-		
-		this.fillBox()
+		this.initializeChat(<HTMLInputElement>chat_object.getElementsByTagName('INPUT')[0], 'global');
+
+		this.handleGlobalChatMessages();
+		this.enableGlobalChatInfo();
+		this.fillBox();
 	}
+	
+	handleGlobalChatMessages():void{
+		this.chat_socket.socketListener('global-client-message', (response:any)=>{
+			var name_col_width:number = 2;
+			this.addTextToChatbox(this.main_chat_box.getElementsByTagName('UL')[1], name_col_width, response['contents'], response['sender']);
+		});
+	}
+	
+	enableGlobalChatInfo():void{
+		this.chat_socket.socketListener('global-chat-setup', (chatter_list:any)=>{
+			document.getElementById('global-count')!.textContent = chatter_list.length + ' People Online';
+			var player_list = this.main_chat_box.getElementsByTagName('UL')[0];
+			var player_list_text = "<li><mark class='' id='current-user'>" + GameConstants.client_name + "(" + GameConstants.socket_id.substr(0,4) + ")</mark></li>";
+			
+			chatter_list.forEach((el:string)=>{
+				if(el == GameConstants.client_name + "(" + GameConstants.socket_id.substr(0,4) + ")") return;
+				player_list_text += "<li><div>" + el + "</div></li>";
+			});
+			
+			player_list.innerHTML = player_list_text;
+		});
+	}
+	
 	
 	fillBox():void{
 		this.chat_socket.socketListener('global-fill', (response_list:any[])=>{

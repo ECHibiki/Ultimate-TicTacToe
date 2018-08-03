@@ -65,6 +65,7 @@
 		"src/chat.ts",
 		"src/global-chat.ts",
 		"src/room-chat.ts",
+		"src/settings.ts",
         "src/app.ts"
     ]  
 }
