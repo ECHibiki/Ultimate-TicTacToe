@@ -44,7 +44,7 @@ def formSession(room_id):
 - - -
 - - -''',  'Turn':'x', 'Previous-Turn':'-', 'Move':0, socket_names[rand[0]]:{'Piece':'x', 'Client-Name':client_names[rand[0]]}, 
                                                       socket_names[rand[1]]:{'Piece':'o', 'Client-Name':client_names[rand[1]]}, 
-                                                      'Message':''}
+                                                      'Message':'', 'Observers':[]}
    
 def emitBoard(room_id, target=None):
     if target==None:
@@ -189,3 +189,6 @@ def swapTurn(room_id):
 
 def determineRoom(sid):
     return rooms()[1]
+
+def observeRoom(rid):
+    sessions[rid]['Observers'].append(rid)

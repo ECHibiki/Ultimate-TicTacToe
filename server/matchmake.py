@@ -16,7 +16,6 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 def checkJoin(sid,client_id):
     waiting_list_handle = open('waiting', 'r')
     waiting_list_text = waiting_list_handle.read()
-    sid_cid_pairs[sid] = client_id
     if waiting_list_text.find('\n') == -1:
         addSID(sid,client_id)
         return False, None
@@ -31,6 +30,15 @@ def checkDisconnect(sid):
     else:
         clearSID(sid)
         return False, None
+        
+def checkObserverDisconnect(sid):
+    for room in _rooms:
+        print(str(_rooms[room]['Viewers']))
+        for index, viewer in enumerate(_rooms[room]['Viewers']):
+            if viewer == misc.generateNameTag(sid, sid_cid_pairs[sid]):           
+                    return True, room, index
+    
+    return False, None, -1      
 
 def findRoomBySID(sid):
     room_to_clear = ""
@@ -87,4 +95,13 @@ def clearRoom(room_to_clear, sid):
         
     # close_room(room_to_clear)
 
+def createSIDCIDPair(sid, cid):
+    sid_cid_pairs[sid] = cid
 
+def returnRoomIDs(sid):
+    emit('room-fill', _rooms ,room=sid)
+    
+def becomeObserver(sid,cid,rid):
+    _rooms[rid]['Viewers'].append(misc.generateNameTag(sid, cid))
+    join_room(rid, sid=sid)
+    createSIDCIDPair(sid,cid)

@@ -9,21 +9,33 @@ chatters = []
 def roomMessage(sid, message):
     if message['contents'].strip() == '' or message['sender'].strip() == '': 
         return
-    emit('room-client-message', {'contents': removeHazzards(message['contents']), 'sender': removeHazzards(misc.generateNameTag(sid, message['sender']))}, room=rooms()[-1])
+        
+    client_room = ''
+    for room in rooms():
+        if room.find('|') > -1:
+            client_room = room
+            break
+    
+    emit('room-client-message', {'contents': removeHazzards(message['contents']), 'sender': removeHazzards(misc.generateNameTag(sid, message['sender']))}, room=client_room)
  
 def roomServerMessage(message, room_id):
     emit('room-server-message', {'contents': message}, room=room_id)
  
 def roomChatInfo(sid, cid):
-    room_name = rooms()[-1]
+    room_name = ''
+    for room in rooms():
+        if room.find('|') > -1:
+            room_name = room
+            break
+    if room_name == '':
+        room_name = rooms()[-1]
     try:
         all_viewers = matchmake._rooms[room_name]['Viewers']
         room_code = matchmake._rooms[room_name]['Code']
         emit('room-chat-setup', {'Room':room_code, 'Viewers':all_viewers}, room=room_name)
     except KeyError:
         emit('room-chat-setup', {'Room':'Forming...', 'Viewers':[misc.generateNameTag(sid, cid)]}, room=room_name)
-    roomServerMessage('Client ' + cid + ' has joined the room',room_name)
-     
+    
 def globalMessage(sid, message):
     if message['contents'].strip() == '' or message['sender'].strip() == '': 
         return

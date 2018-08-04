@@ -8,7 +8,7 @@ class RoomChat extends Chat{
 		this.initializeChat(<HTMLInputElement>chat_object.getElementsByTagName('INPUT')[0], 'room');
 		
 		this.handleRoomMessages();	
-		this.enableRoomChatInfo();
+		this.retrieveRoomChatInfo();
 	}
 	
 	handleRoomMessages():void{
@@ -22,7 +22,7 @@ class RoomChat extends Chat{
 		});
 	}
 	
-	enableRoomChatInfo():void{
+	retrieveRoomChatInfo():void{
 		this.chat_socket.socketListener('room-chat-setup', (response_list:any)=>{
 			document.getElementById('room-name')!.textContent = 'GameID: ' + response_list['Room'];
 			var viewers = ''

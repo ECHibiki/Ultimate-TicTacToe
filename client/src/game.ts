@@ -3,6 +3,9 @@ class GameSettings{
 		
 		var game:any = null; 
 		var info_text:any = null;
+		var play_text:any = null;		
+		var spectate_text:any = null;
+		
 		var client_id:string = ''
 		var players_turn:boolean = false
 		var place_in_progress:boolean = false
@@ -28,28 +31,35 @@ class GameSettings{
 		game = new Phaser.Game(config);
 		
 		function preload ()	{
+			this.info_text =  this.add.text(10, 16, 'building game...', { fontSize: '22px', fill: '#fff' });
+
 			this.load.image('board', 'sprites/board.jpg');
 			this.load.image('x', 'sprites/x.png');
 			this.load.image('xG', 'sprites/xG.png');
 			this.load.image('o', 'sprites/o.png');
-			this.load.image('oG', 'sprites/oG.png');
-			this.info_text =  this.add.text(10, 16, '', { fontSize: '22px', fill: '#fff' });
+			this.load.image('oG', 'sprites/oG.png');		
+			
+			this.play_text =  this.add.text(900, 16, 'Play', { fontSize: '32px', fill: '#fff' });
+			this.play_text.setInteractive();
+			this.play_text.on('pointerdown', playGame, this);
+			
+			this.spectate_text =  this.add.text(900, 100, 'Spectate', { fontSize: '32px', fill: '#fff' });			
+			this.spectate_text.setInteractive();
+			this.spectate_text.on('pointerdown', spectateMenu, this);	
+			
 		}
+		
+		function playGame(click_evnt:any){
+			console.log('press play');
+			console.log(click_evnt);
 
-		function create (){
-			this.info_text.setText('connecting...');
-			this.board = null;
-			this.x_cursor_icon = null;
-			this.x_previous = null;
-			this.o_cursor_icon = null;
-			this.o_previous = null;
-			this.x_board = [];
-			this.o_board = [];
-					
+			this.spectate_text.x = 900
+			this.play_text.x = 900
+						
 			//socket handlers
 			socket.socketListener('ready', (data:any)=>{
 				this.info_text.setText('Searching for players...');
-				this.client_id = data;						
+				this.info_text.x = 10					
 			});
 			socket.socketListener('disconnect', (data:any)=>{
 				this.info_text.setText('Game server is offline');
@@ -74,7 +84,7 @@ class GameSettings{
 				var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18
 
 				//turns
-				if(data[this.client_id]['Piece'] == data['Turn']){
+				if(data[GameConstants.socket_id]['Piece'] == data['Turn']){
 					this.place_in_progress = false;
 					this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move'])
 					this.players_turn = true
@@ -169,7 +179,145 @@ class GameSettings{
 			}, this);
 
 			//send ready sign
-			socket.sendSocket('ready',GameConstants.client_name)
+			socket.sendSocket('ready', GameConstants.client_name);
+			
+		}
+		
+		function spectateMenu(click_evnt:any){
+			console.log('press spec');		
+			console.log(click_evnt);	
+			socket.sendSocket('room-fill', GameConstants.client_name);		
+			
+			this.info_text.x = 900;
+			this.play_text.x = 900;
+			this.spectate_text.x = 900;
+			
+			socket.socketListener('room-fill', (rooms_resp:any)=>{
+				console.log(rooms_resp);
+				let num = 0;
+				let spacing = 30;
+				for (let room in rooms_resp){
+					var room_handel = (room_to_join:string)=>{
+						this.rooms_list_arr.push(this.add.text(30, (num+1)*spacing, rooms_resp[room_to_join]['Code'], { fontSize: '22px', fill: '#fff' }))
+						this.rooms_list_arr[num].setInteractive();
+						this.rooms_list_arr[num].on('pointerdown', ()=>{									
+							this.rooms_list_arr.forEach((el:any, ind:number)=>{
+								this.rooms_list_arr[ind].destroy();
+							});
+							spectateRoom(room_to_join, this);
+						}, this);
+						num++;
+					}
+					room_handel(room)
+				}
+			}, this);
+		}
+		
+		function spectateRoom(room:string, this_copy:any){
+			console.log(room);
+			
+			socket.sendSocket('spectate-room', {'client_name': GameConstants.client_name, 'room':room});					
+			socket.socketListener('spectate-join', (conf:any)=>{
+				
+				this_copy.info_text.x = 25;
+				this_copy.info_text.y = 510;
+				this_copy.info_text.setText('Setting up game...')
+				this_copy.board = this_copy.add.image(250, 250, 'board');
+				this_copy.x_cursor_icon = this_copy.add.image(900, 0, 'x');
+				this_copy.x_previous = this_copy.add.image(900, 0, 'xG');
+				this_copy.o_cursor_icon = this_copy.add.image(900, 0, 'o');	
+				this_copy.o_previous = this_copy.add.image(900, 0, 'oG');	
+				
+				//socket handlers
+				socket.socketListener('ready', (data:any)=>{
+					this_copy.info_text.setText('Searching for players...');
+					this_copy.info_text.x = 10					
+				});
+				socket.socketListener('disconnect', (data:any)=>{
+					this_copy.info_text.setText('Game server is offline');
+				});
+				
+				socket.socketListener('broken',(data:any)=>{
+					this_copy.info_text.setText('Disconnected with other session')
+				});
+				socket.socketListener('board-data',(data:any)=>{
+					var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18
+					var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18
+
+					//turns
+
+					if(data['Previous-Turn'] != '-'){
+						if( data['Turn'] == 'x'){
+							this_copy.x_cursor_icon.x = reapear_location_x;
+							this_copy.x_cursor_icon.y = reapear_location_y;
+							this_copy.o_previous.x = previous_x;
+							this_copy.x_previous.x = -100;
+							this_copy.o_previous.y = previous_y;						
+							this_copy.x_previous.y = -100;						
+						} 
+						else{
+							this_copy.o_cursor_icon.x = reapear_location_x;
+							this_copy.o_cursor_icon.y = reapear_location_y;
+							this_copy.x_previous.x = previous_x;
+							this_copy.o_previous.x = -100;
+							this_copy.x_previous.y = previous_y;						
+							this_copy.o_previous.y = -100;		
+						}
+					} 
+
+					this_copy.info_text.setText('Turn ' + data['Turn'] + ' - Move ' + data['Move']);
+					this_copy.players_turn = false;
+					if( data['Turn'] == 'x') this_copy.x_cursor_icon.visible = false;
+					else this_copy.o_cursor_icon.visible = false;
+
+					//Extra messages
+					if(data['Message'] != ''){
+						this_copy.info_text.setText(data['Message'])
+					}				
+					//board clear
+					this_copy.x_board.forEach((el:any, ind:number)=>{
+						this_copy.x_board[ind].destroy();
+					});
+					this_copy.o_board.forEach((el:any, ind:number)=>{
+						this_copy.o_board[ind].destroy();
+					});
+					//board draw
+					var board:string[] = data['Board'].split('\n');
+					board.forEach((el:string, ind_y:number)=>{			
+						var el_split:string[] = el.split(' ')
+						el_split.forEach((e:string, ind_x:number)=>{
+							if(ind_y == data['Previous-Turn'].split('|')[1] && ind_x == data['Previous-Turn'].split('|')[0]) return;
+							if(e == 'x'){
+								this_copy.x_board.push(this_copy.add.image(ind_x * board_width / 9 + board_width / 18, ind_y * board_height / 9 + board_height / 18, 'x'));
+							}
+							else if(e == 'o'){
+								this_copy.o_board.push(this_copy.add.image(ind_x * board_width / 9 + board_width / 18, ind_y * board_height / 9 + board_height / 18, 'o'));
+							}
+						});
+					});
+				});
+
+				socket.sendSocket('spectate-connect', {'client_name': GameConstants.client_name, 'room':room});	
+			}, this);
+		}
+
+		function create (){
+			this.board = null;
+			this.x_cursor_icon = null;
+			this.x_previous = null;
+			this.o_cursor_icon = null;
+			this.o_previous = null;
+			this.x_board = [];
+			this.o_board = [];
+			this.rooms_list_arr = [];			
+
+			this.info_text.x = 900;											
+			this.play_text.x = 30;
+			this.play_text.y = 30;
+			this.spectate_text.x = 30;				
+			this.spectate_text.y = 100;		
+
+			socket.sendSocket('client-load', GameConstants.client_name);			
 		}
 	}	
 }

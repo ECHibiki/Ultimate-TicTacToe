@@ -42,6 +42,8 @@ var GameSettings = /** @class */ (function () {
     function GameSettings(socket) {
         var game = null;
         var info_text = null;
+        var play_text = null;
+        var spectate_text = null;
         var client_id = '';
         var players_turn = false;
         var place_in_progress = false;
@@ -63,27 +65,29 @@ var GameSettings = /** @class */ (function () {
         };
         game = new Phaser.Game(config);
         function preload() {
+            this.info_text = this.add.text(10, 16, 'building game...', { fontSize: '22px', fill: '#fff' });
             this.load.image('board', 'sprites/board.jpg');
             this.load.image('x', 'sprites/x.png');
             this.load.image('xG', 'sprites/xG.png');
             this.load.image('o', 'sprites/o.png');
             this.load.image('oG', 'sprites/oG.png');
-            this.info_text = this.add.text(10, 16, '', { fontSize: '22px', fill: '#fff' });
+            this.play_text = this.add.text(900, 16, 'Play', { fontSize: '32px', fill: '#fff' });
+            this.play_text.setInteractive();
+            this.play_text.on('pointerdown', playGame, this);
+            this.spectate_text = this.add.text(900, 100, 'Spectate', { fontSize: '32px', fill: '#fff' });
+            this.spectate_text.setInteractive();
+            this.spectate_text.on('pointerdown', spectateMenu, this);
         }
-        function create() {
+        function playGame(click_evnt) {
             var _this = this;
-            this.info_text.setText('connecting...');
-            this.board = null;
-            this.x_cursor_icon = null;
-            this.x_previous = null;
-            this.o_cursor_icon = null;
-            this.o_previous = null;
-            this.x_board = [];
-            this.o_board = [];
+            console.log('press play');
+            console.log(click_evnt);
+            this.spectate_text.x = 900;
+            this.play_text.x = 900;
             //socket handlers
             socket.socketListener('ready', function (data) {
                 _this.info_text.setText('Searching for players...');
-                _this.client_id = data;
+                _this.info_text.x = 10;
             });
             socket.socketListener('disconnect', function (data) {
                 _this.info_text.setText('Game server is offline');
@@ -105,7 +109,7 @@ var GameSettings = /** @class */ (function () {
                 var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
                 var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
                 //turns
-                if (data[_this.client_id]['Piece'] == data['Turn']) {
+                if (data[GameConstants.socket_id]['Piece'] == data['Turn']) {
                     _this.place_in_progress = false;
                     _this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move']);
                     _this.players_turn = true;
@@ -205,6 +209,131 @@ var GameSettings = /** @class */ (function () {
             //send ready sign
             socket.sendSocket('ready', GameConstants.client_name);
         }
+        function spectateMenu(click_evnt) {
+            var _this = this;
+            console.log('press spec');
+            console.log(click_evnt);
+            socket.sendSocket('room-fill', GameConstants.client_name);
+            this.info_text.x = 900;
+            this.play_text.x = 900;
+            this.spectate_text.x = 900;
+            socket.socketListener('room-fill', function (rooms_resp) {
+                console.log(rooms_resp);
+                var num = 0;
+                var spacing = 30;
+                for (var room in rooms_resp) {
+                    var room_handel = function (room_to_join) {
+                        _this.rooms_list_arr.push(_this.add.text(30, (num + 1) * spacing, rooms_resp[room_to_join]['Code'], { fontSize: '22px', fill: '#fff' }));
+                        _this.rooms_list_arr[num].setInteractive();
+                        _this.rooms_list_arr[num].on('pointerdown', function () {
+                            _this.rooms_list_arr.forEach(function (el, ind) {
+                                _this.rooms_list_arr[ind].destroy();
+                            });
+                            spectateRoom(room_to_join, _this);
+                        }, _this);
+                        num++;
+                    };
+                    room_handel(room);
+                }
+            }, this);
+        }
+        function spectateRoom(room, this_copy) {
+            console.log(room);
+            socket.sendSocket('spectate-room', { 'client_name': GameConstants.client_name, 'room': room });
+            socket.socketListener('spectate-join', function (conf) {
+                this_copy.info_text.x = 25;
+                this_copy.info_text.y = 510;
+                this_copy.info_text.setText('Setting up game...');
+                this_copy.board = this_copy.add.image(250, 250, 'board');
+                this_copy.x_cursor_icon = this_copy.add.image(900, 0, 'x');
+                this_copy.x_previous = this_copy.add.image(900, 0, 'xG');
+                this_copy.o_cursor_icon = this_copy.add.image(900, 0, 'o');
+                this_copy.o_previous = this_copy.add.image(900, 0, 'oG');
+                //socket handlers
+                socket.socketListener('ready', function (data) {
+                    this_copy.info_text.setText('Searching for players...');
+                    this_copy.info_text.x = 10;
+                });
+                socket.socketListener('disconnect', function (data) {
+                    this_copy.info_text.setText('Game server is offline');
+                });
+                socket.socketListener('broken', function (data) {
+                    this_copy.info_text.setText('Disconnected with other session');
+                });
+                socket.socketListener('board-data', function (data) {
+                    var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
+                    var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
+                    //turns
+                    if (data['Previous-Turn'] != '-') {
+                        if (data['Turn'] == 'x') {
+                            this_copy.x_cursor_icon.x = reapear_location_x;
+                            this_copy.x_cursor_icon.y = reapear_location_y;
+                            this_copy.o_previous.x = previous_x;
+                            this_copy.x_previous.x = -100;
+                            this_copy.o_previous.y = previous_y;
+                            this_copy.x_previous.y = -100;
+                        }
+                        else {
+                            this_copy.o_cursor_icon.x = reapear_location_x;
+                            this_copy.o_cursor_icon.y = reapear_location_y;
+                            this_copy.x_previous.x = previous_x;
+                            this_copy.o_previous.x = -100;
+                            this_copy.x_previous.y = previous_y;
+                            this_copy.o_previous.y = -100;
+                        }
+                    }
+                    this_copy.info_text.setText('Turn ' + data['Turn'] + ' - Move ' + data['Move']);
+                    this_copy.players_turn = false;
+                    if (data['Turn'] == 'x')
+                        this_copy.x_cursor_icon.visible = false;
+                    else
+                        this_copy.o_cursor_icon.visible = false;
+                    //Extra messages
+                    if (data['Message'] != '') {
+                        this_copy.info_text.setText(data['Message']);
+                    }
+                    //board clear
+                    this_copy.x_board.forEach(function (el, ind) {
+                        this_copy.x_board[ind].destroy();
+                    });
+                    this_copy.o_board.forEach(function (el, ind) {
+                        this_copy.o_board[ind].destroy();
+                    });
+                    //board draw
+                    var board = data['Board'].split('\n');
+                    board.forEach(function (el, ind_y) {
+                        var el_split = el.split(' ');
+                        el_split.forEach(function (e, ind_x) {
+                            if (ind_y == data['Previous-Turn'].split('|')[1] && ind_x == data['Previous-Turn'].split('|')[0])
+                                return;
+                            if (e == 'x') {
+                                this_copy.x_board.push(this_copy.add.image(ind_x * board_width / 9 + board_width / 18, ind_y * board_height / 9 + board_height / 18, 'x'));
+                            }
+                            else if (e == 'o') {
+                                this_copy.o_board.push(this_copy.add.image(ind_x * board_width / 9 + board_width / 18, ind_y * board_height / 9 + board_height / 18, 'o'));
+                            }
+                        });
+                    });
+                });
+                socket.sendSocket('spectate-connect', { 'client_name': GameConstants.client_name, 'room': room });
+            }, this);
+        }
+        function create() {
+            this.board = null;
+            this.x_cursor_icon = null;
+            this.x_previous = null;
+            this.o_cursor_icon = null;
+            this.o_previous = null;
+            this.x_board = [];
+            this.o_board = [];
+            this.rooms_list_arr = [];
+            this.info_text.x = 900;
+            this.play_text.x = 30;
+            this.play_text.y = 30;
+            this.spectate_text.x = 30;
+            this.spectate_text.y = 100;
+            socket.sendSocket('client-load', GameConstants.client_name);
+        }
     }
     return GameSettings;
 }());
@@ -269,7 +398,7 @@ var GlobalChat = /** @class */ (function (_super) {
         _this = _super.call(this, chat_object, websocket) || this;
         _this.initializeChat(chat_object.getElementsByTagName('INPUT')[0], 'global');
         _this.handleGlobalChatMessages();
-        _this.enableGlobalChatInfo();
+        _this.retrieveGlobalChatInfo();
         _this.fillBox();
         return _this;
     }
@@ -280,7 +409,7 @@ var GlobalChat = /** @class */ (function (_super) {
             _this.addTextToChatbox(_this.main_chat_box.getElementsByTagName('UL')[1], name_col_width, response['contents'], response['sender']);
         });
     };
-    GlobalChat.prototype.enableGlobalChatInfo = function () {
+    GlobalChat.prototype.retrieveGlobalChatInfo = function () {
         var _this = this;
         this.chat_socket.socketListener('global-chat-setup', function (chatter_list) {
             document.getElementById('global-count').textContent = chatter_list.length + ' People Online';
@@ -320,7 +449,7 @@ var RoomChat = /** @class */ (function (_super) {
         _this = _super.call(this, chat_object, websocket) || this;
         _this.initializeChat(chat_object.getElementsByTagName('INPUT')[0], 'room');
         _this.handleRoomMessages();
-        _this.enableRoomChatInfo();
+        _this.retrieveRoomChatInfo();
         return _this;
     }
     RoomChat.prototype.handleRoomMessages = function () {
@@ -333,7 +462,7 @@ var RoomChat = /** @class */ (function (_super) {
             _this.addServerMessageToChatbox(_this.main_chat_box.getElementsByTagName('UL')[0], response['contents']);
         });
     };
-    RoomChat.prototype.enableRoomChatInfo = function () {
+    RoomChat.prototype.retrieveRoomChatInfo = function () {
         this.chat_socket.socketListener('room-chat-setup', function (response_list) {
             document.getElementById('room-name').textContent = 'GameID: ' + response_list['Room'];
             var viewers = '';
@@ -381,6 +510,10 @@ window.onload = function () {
         var room_chat = new RoomChat(document.getElementById('room-chat'), socket);
         var global_chat = new GlobalChat(document.getElementById('global-chat'), socket);
         var settings = new Settings();
+    });
+    socket.socketListener('error', function (err) {
+        console.log(err);
+        alert('Server had an error\n ' + err);
     });
     var game = new GameSettings(socket);
 };

@@ -8,7 +8,7 @@ class GlobalChat extends Chat{
 		this.initializeChat(<HTMLInputElement>chat_object.getElementsByTagName('INPUT')[0], 'global');
 
 		this.handleGlobalChatMessages();
-		this.enableGlobalChatInfo();
+		this.retrieveGlobalChatInfo();
 		this.fillBox();
 	}
 	
@@ -19,7 +19,7 @@ class GlobalChat extends Chat{
 		});
 	}
 	
-	enableGlobalChatInfo():void{
+	retrieveGlobalChatInfo():void{
 		this.chat_socket.socketListener('global-chat-setup', (chatter_list:any)=>{
 			document.getElementById('global-count')!.textContent = chatter_list.length + ' People Online';
 			var player_list = this.main_chat_box.getElementsByTagName('UL')[0];

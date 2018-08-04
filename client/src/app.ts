@@ -31,6 +31,11 @@ window.onload = () => {
 
 		var settings = new Settings();
 	});
+	
+	socket.socketListener('error', (err:string)=>{
+		console.log(err);
+		alert('Server had an error\n ' + err);
+	});
 
 	
 	var game = new GameSettings(socket);	
