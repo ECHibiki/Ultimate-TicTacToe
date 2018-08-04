@@ -13,7 +13,7 @@ socketio = SocketIO(app, ping_timeout=20, ping_interval=10, allow_upgrades=True,
 @app.route('/')
 def gameRoute():
     #return open("client/builds/game.js", 'r').read()
-    return open('index.html', 'r', encoding='cp932', errors='ignore').read()
+    return open('index.html', 'r', encoding='utf-8', errors='ignore').read()
     
 @app.route('/<path:path>')
 def rscRoute(path):
