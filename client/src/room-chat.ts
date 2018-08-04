@@ -13,7 +13,7 @@ class RoomChat extends Chat{
 	
 	handleRoomMessages():void{
 		this.chat_socket.socketListener('room-client-message', (response:any)=>{
-			var name_col_width:number = 3
+			var name_col_width:number = 4
 			this.addTextToChatbox(this.main_chat_box.getElementsByTagName('UL')![0], name_col_width, response['contents'], response['sender']);
 		});
 		
