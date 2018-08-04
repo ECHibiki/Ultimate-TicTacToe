@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <title>Ultimate TicTacToe</title>
-	<script src="app.js?10c"></script>
+	<script src="app.min.js"></script>
     <link rel="stylesheet" href="app.css" type="text/css" />
 </head>
 <body style='background-color:rgb(234, 188, 76)'>
@@ -44,7 +44,7 @@
 					<div id='rules' class='tab-pane fade' role='tabpanel' aria-labelledby='rules-tab' style=''>
 						<h2 class='text-center'>Rules</h2>
 						<ul class="font-weight-bold" style='font-size:16px;overflow:auto;height:333px'>
-							<li>If X played in the top-right corner of the local board, O is forced to play their next move in the top-right local board.</li>
+							<li>If X played in the top-right corner of a local board, O is forced to play their next move in the top-right global board.</li>
 							<li>Each small 3-by-3 tic-tac-toe board is referred to as a local board, and the larger 3-by-3 board is referred to as the global board.</li>
 							<li>The game starts with X playing wherever they want in any of the 81 empty spots. </li>
 							<li>This move 'sends' their opponent to its relative location.</li>

@@ -8,7 +8,7 @@ import session
 import chat
 
 app = Flask(__name__)
-app.secret_key = '2902u08uk;ljsdf;lkj09'
+app.secret_key = 'hjksdertyhoua/sdfg'
 socketio = SocketIO(app, ping_timeout=20, ping_interval=10, allow_upgrades=True, engineio_logger=False)
 @app.route('/')
 def gameRoute():
@@ -134,4 +134,4 @@ def onRoomFill(fr_message):
 # if __name__ == '__main__':
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.NOTSET)
-socketio.run(app, port=32232, host='0.0.0.0', debug=True)
+socketio.run(app, port=80, host='0.0.0.0', debug=False)

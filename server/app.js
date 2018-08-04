@@ -455,7 +455,7 @@ var RoomChat = /** @class */ (function (_super) {
     RoomChat.prototype.handleRoomMessages = function () {
         var _this = this;
         this.chat_socket.socketListener('room-client-message', function (response) {
-            var name_col_width = 3;
+            var name_col_width = 4;
             _this.addTextToChatbox(_this.main_chat_box.getElementsByTagName('UL')[0], name_col_width, response['contents'], response['sender']);
         });
         this.chat_socket.socketListener('room-server-message', function (response) {
