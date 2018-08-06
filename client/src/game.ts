@@ -91,16 +91,16 @@ class GameSettings{
 					this.player_piece = data['Turn']	
 					if(data['Previous-Turn'] != '-'){
 						if( data['Turn'] == 'x'){
-							this.x_cursor_icon.x = reapear_location_x;
-							this.x_cursor_icon.y = reapear_location_y;
+							this.x_cursor_icon.x = this.reapear_location_x;
+							this.x_cursor_icon.y = this.reapear_location_y;
 							this.o_previous.x = previous_x;
 							this.x_previous.x = -100;
 							this.o_previous.y = previous_y;						
 							this.x_previous.y = -100;						
 						} 
 						else{
-							this.o_cursor_icon.x = reapear_location_x;
-							this.o_cursor_icon.y = reapear_location_y;
+							this.o_cursor_icon.x = this.reapear_location_x;
+							this.o_cursor_icon.y = this.reapear_location_y;
 							this.x_previous.x = previous_x;
 							this.o_previous.x = -100;
 							this.x_previous.y = previous_y;						
@@ -152,8 +152,8 @@ class GameSettings{
 						'x': Math.floor(x / (board_width / 9)),
 						'y': Math.floor(y / (board_height / 9)),
 					};
-					this.reapear_location_x = x * board_width / 9 + board_width / 18;
-					this.reapear_location_y = y * board_height / 9 + board_height / 18;
+					this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
+					this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
 					socket.sendSocket('move', seg_xy);
 				}
 			});

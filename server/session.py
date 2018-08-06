@@ -53,7 +53,7 @@ def emitBoard(room_id, target=None):
    
 def storeBoard(room_id):
     filename = matchmake._rooms[room_id]['Code'] + '.' + str(time.time()) 
-    with open('boards/' + filename + '.json', 'w') as session_handle:
+    with open('boards/' + filename + '.json', 'w', encoding='utf-8') as session_handle:
         session_handle.write(json.dumps(sessions[room_id]))
         session_handle.close()
     
@@ -70,12 +70,13 @@ def move(sid, position):
         three_x_three_main = reduce3X3(position['x'], position['y'], sessions[room_id]['Board'])
         if checkGridWon(three_x_three_main):
             three_x_three_reduced = array3X3(sessions[room_id]['Reduced-Board'])
-            if three_x_three_reduced[floor(position['x'] / 3)][floor(position['y'] / 3)] == '-':
+            if three_x_three_reduced[floor(position['y'] / 3)][floor(position['x'] / 3)] == '-':
                 sessions[room_id]['Reduced-Board'] = placePieceOn3X3(floor(position['x'] / 3), floor(position['y'] / 3), three_x_three_reduced, sessions[room_id]['Turn'])
                 if checkGridWon(three_x_three_reduced):
                     sessions[room_id]['Message'] = 'Player ' + sessions[room_id][sid]['Client-Name'] +'(' + sessions[room_id]['Turn'] + ') wins!'                   
                     chat.roomServerMessage(str(misc.generateNameTag(sid, sessions[room_id][sid]['Client-Name']))+ ' Wins.', room_id)
                     storeBoard(room_id)
+                    swapTurn(room_id)
                 else:
                     swapTurn(room_id)
                     sessions[room_id]['Message'] = 'Section Won - Turn '+ sessions[room_id]['Turn'] 
@@ -188,7 +189,9 @@ def swapTurn(room_id):
         sessions[room_id]['Turn'] = 'x'
 
 def determineRoom(sid):
-    return rooms()[1]
+    for room in rooms():
+        if room.find('|') > -1:
+            return room
 
 def observeRoom(rid):
     sessions[rid]['Observers'].append(rid)

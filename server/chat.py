@@ -14,12 +14,11 @@ def roomMessage(sid, message):
     for room in rooms():
         if room.find('|') > -1:
             client_room = room
-            break
-    
+            break 
     emit('room-client-message', {'contents': removeHazzards(message['contents']), 'sender': removeHazzards(misc.generateNameTag(sid, message['sender']))}, room=client_room)
  
 def roomServerMessage(message, room_id):
-    emit('room-server-message', {'contents': message}, room=room_id)
+    emit('room-server-message', {'contents': removeHazzards(message)}, room=room_id)
  
 def roomChatInfo(sid, cid):
     room_name = ''
@@ -31,6 +30,8 @@ def roomChatInfo(sid, cid):
         room_name = rooms()[-1]
     try:
         all_viewers = matchmake._rooms[room_name]['Viewers']
+        for index, viewer in enumerate(all_viewers):
+            all_viewers[index] = removeHazzards(viewer)
         room_code = matchmake._rooms[room_name]['Code']
         emit('room-chat-setup', {'Room':room_code, 'Viewers':all_viewers}, room=room_name)
     except KeyError:
@@ -39,21 +40,22 @@ def roomChatInfo(sid, cid):
 def globalMessage(sid, message):
     if message['contents'].strip() == '' or message['sender'].strip() == '': 
         return
-    log('chat/global.log', '<' + misc.generateNameTag(sid, message['sender'].replace(' ', '%20')) + '> ' + message['contents'].strip())
-    emit('global-client-message', {'contents': removeHazzards(message['contents']), 'sender': removeHazzards(misc.generateNameTag(sid, message['sender']))},broadcast=True)
+    message['contents'] = removeHazzards(message['contents']).strip()
+    log('chat/global.log', '&lt;' + removeHazzards(misc.generateNameTag(sid, message['sender'].replace(' ', '%20'))) + '&gt; ' + message['contents'])
+    emit('global-client-message', {'contents': message['contents'], 'sender': removeHazzards(misc.generateNameTag(sid, message['sender']))},broadcast=True)
 
 def globalChatInfo(sid, cid):
-    chatters.append(misc.generateNameTag(sid, cid))
+    chatters.append(removeHazzards(misc.generateNameTag(sid, cid)))
     emit('global-chat-setup', chatters, broadcast=True)
 
 def returnLogs(sid):
-    log_lines = removeHazzards(open('chat/global.log').read()).split('\n')
-    to_emit = []
+    log_lines = (open('chat/global.log', 'r', encoding='utf-8').read()).split('\n')
+    chat_logs = []
     for line in log_lines:
         sender = line[:line.find(' ')].replace('%20', ' ')
         contents = line[line.find(' '):]
-        to_emit.append({'sender': sender, 'contents': contents})
-    emit('global-fill', to_emit,room=sid)
+        chat_logs.append({'sender': sender, 'contents': contents})
+    emit('global-fill', chat_logs,room=sid)
     
 def removeHazzards(line):
     line = line.replace('<', '&lt;')
@@ -61,12 +63,12 @@ def removeHazzards(line):
     return line.strip()
     
 def log(file, line):
-    open(file, 'a').write(line + '\n')
+    open(file, 'a', encoding='utf-8').write(line + '\n')
     
 def removeGlobalClient(sid):
     try:
         cid = matchmake.sid_cid_pairs[sid]
-        del chatters[chatters.index(misc.generateNameTag(sid, cid))]
+        del chatters[chatters.index(removeHazzards(misc.generateNameTag(sid, cid)))]
     except KeyError:
         print(sid + ' key err');
     emit('global-chat-setup', chatters, broadcast=True)

@@ -19,7 +19,7 @@ var GameConstants = /** @class */ (function () {
 var Socket = /** @class */ (function () {
     function Socket() {
         var _this = this;
-        this.url = "http://96.22.104.33:32232";
+        this.url = "localhost";
         this.websocket = null;
         this.websocket = io.connect(this.url, { reconnection: false });
         this.socketListener('message', function (data) {
@@ -116,16 +116,16 @@ var GameSettings = /** @class */ (function () {
                     _this.player_piece = data['Turn'];
                     if (data['Previous-Turn'] != '-') {
                         if (data['Turn'] == 'x') {
-                            _this.x_cursor_icon.x = reapear_location_x;
-                            _this.x_cursor_icon.y = reapear_location_y;
+                            _this.x_cursor_icon.x = _this.reapear_location_x;
+                            _this.x_cursor_icon.y = _this.reapear_location_y;
                             _this.o_previous.x = previous_x;
                             _this.x_previous.x = -100;
                             _this.o_previous.y = previous_y;
                             _this.x_previous.y = -100;
                         }
                         else {
-                            _this.o_cursor_icon.x = reapear_location_x;
-                            _this.o_cursor_icon.y = reapear_location_y;
+                            _this.o_cursor_icon.x = _this.reapear_location_x;
+                            _this.o_cursor_icon.y = _this.reapear_location_y;
                             _this.x_previous.x = previous_x;
                             _this.o_previous.x = -100;
                             _this.x_previous.y = previous_y;
@@ -180,8 +180,8 @@ var GameSettings = /** @class */ (function () {
                         'x': Math.floor(x / (board_width / 9)),
                         'y': Math.floor(y / (board_height / 9)),
                     };
-                    _this.reapear_location_x = x * board_width / 9 + board_width / 18;
-                    _this.reapear_location_y = y * board_height / 9 + board_height / 18;
+                    _this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
+                    _this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
                     socket.sendSocket('move', seg_xy);
                 }
             });
