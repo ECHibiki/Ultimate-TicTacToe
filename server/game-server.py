@@ -24,6 +24,10 @@ def rscRoute(path):
 @app.route('/sprites/<path:path>')
 def spriteRoute(path):
     return send_from_directory('sprites', path)
+
+@app.route('/sfx/<path:path>')
+def sfxRoute(path):
+    return send_from_directory('sfx', path)    
     
 @socketio.on('ping')
 def handleMessage(message):

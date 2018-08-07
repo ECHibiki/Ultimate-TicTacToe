@@ -19,7 +19,7 @@ var GameConstants = /** @class */ (function () {
 var Socket = /** @class */ (function () {
     function Socket() {
         var _this = this;
-        this.url = "localhost";
+        this.url = "localhost:3801";
         this.websocket = null;
         this.websocket = io.connect(this.url, { reconnection: false });
         this.socketListener('message', function (data) {
@@ -64,6 +64,38 @@ var GameSettings = /** @class */ (function () {
             parent: 'phaser-game'
         };
         game = new Phaser.Game(config);
+        document.body.addEventListener('notification-move', function (notification) {
+            console.log('nmot');
+            if (document.hasFocus() == true) {
+                do {
+                    var x_ind = document.title.indexOf('(x)');
+                    if (x_ind > -1) {
+                        document.title = document.title.substr(x_ind + 3);
+                    }
+                    var o_ind = document.title.indexOf('(o)');
+                    if (o_ind > -1) {
+                        document.title = document.title.substr(o_ind + 3);
+                    }
+                    console.log(x_ind + 3);
+                    console.log(o_ind + 3);
+                } while (x_ind > -1 || o_ind > -1);
+            }
+            if (document.hasFocus() == false) {
+                do {
+                    var x_ind = document.title.indexOf('(x)');
+                    if (x_ind > -1) {
+                        document.title = document.title.substr(x_ind + 3);
+                    }
+                    var o_ind = document.title.indexOf('(o)');
+                    if (o_ind > -1) {
+                        document.title = document.title.substr(o_ind + 3);
+                    }
+                    console.log(x_ind + 3);
+                    console.log(o_ind + 3);
+                } while (x_ind > 3 || o_ind > 3);
+                document.title = "(" + notification.detail + ") " + document.title;
+            }
+        });
         function preload() {
             this.info_text = this.add.text(10, 16, 'building game...', { fontSize: '22px', fill: '#fff' });
             this.load.image('board', 'sprites/board.jpg');
@@ -71,6 +103,10 @@ var GameSettings = /** @class */ (function () {
             this.load.image('xG', 'sprites/xG.png');
             this.load.image('o', 'sprites/o.png');
             this.load.image('oG', 'sprites/oG.png');
+            this.load.audio('start', ['sfx/game-start.mp3']);
+            this.load.audio('move', ['sfx/move-done.mp3']);
+            this.load.audio('win', ['sfx/win-fx.mp3']);
+            this.load.audio('lose', ['sfx/lose-fx.mp3']);
             this.play_text = this.add.text(900, 16, 'Play', { fontSize: '32px', fill: '#fff' });
             this.play_text.setInteractive();
             this.play_text.on('pointerdown', playGame, this);
@@ -82,6 +118,10 @@ var GameSettings = /** @class */ (function () {
             var _this = this;
             console.log('press play');
             console.log(click_evnt);
+            this.game_start_sfx = this.sound.add('start', { pauseOnBlur: "false" });
+            this.move_sfx = this.sound.add('move', { pauseOnBlur: "false" });
+            this.lose_sfx = this.sound.add('win', { pauseOnBlur: "false" });
+            this.win_sfx = this.sound.add('lose', { pauseOnBlur: "false" });
             this.spectate_text.x = 900;
             this.play_text.x = 900;
             //socket handlers
@@ -101,6 +141,7 @@ var GameSettings = /** @class */ (function () {
                 _this.x_previous = _this.add.image(900, 0, 'xG');
                 _this.o_cursor_icon = _this.add.image(900, 0, 'o');
                 _this.o_previous = _this.add.image(900, 0, 'oG');
+                _this.game_start_sfx.play();
             });
             socket.socketListener('broken', function (data) {
                 _this.info_text.setText('Disconnected with other session');
@@ -109,29 +150,24 @@ var GameSettings = /** @class */ (function () {
                 var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
                 var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
                 //turns
+                if (data['Message'].indexOf('wins') > -1 || data['Message'].indexOf('Won') > -1) {
+                    if (data[GameConstants.socket_id]['Piece'] == data['Turn']) {
+                        _this.lose_sfx.play();
+                    }
+                    else {
+                        _this.win_sfx.play();
+                    }
+                }
+                else if (data['Success'] == '1') {
+                    _this.move_sfx.play();
+                }
+                var notif_ev = new CustomEvent('notification-move', { detail: data['Turn'] });
+                document.body.dispatchEvent(notif_ev);
                 if (data[GameConstants.socket_id]['Piece'] == data['Turn']) {
                     _this.place_in_progress = false;
                     _this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move']);
                     _this.players_turn = true;
                     _this.player_piece = data['Turn'];
-                    if (data['Previous-Turn'] != '-') {
-                        if (data['Turn'] == 'x') {
-                            _this.x_cursor_icon.x = _this.reapear_location_x;
-                            _this.x_cursor_icon.y = _this.reapear_location_y;
-                            _this.o_previous.x = previous_x;
-                            _this.x_previous.x = -100;
-                            _this.o_previous.y = previous_y;
-                            _this.x_previous.y = -100;
-                        }
-                        else {
-                            _this.o_cursor_icon.x = _this.reapear_location_x;
-                            _this.o_cursor_icon.y = _this.reapear_location_y;
-                            _this.x_previous.x = previous_x;
-                            _this.o_previous.x = -100;
-                            _this.x_previous.y = previous_y;
-                            _this.o_previous.y = -100;
-                        }
-                    }
                 }
                 else {
                     _this.info_text.setText('Turn ' + data['Turn'] + '(opponent) - Move ' + data['Move']);
@@ -140,6 +176,24 @@ var GameSettings = /** @class */ (function () {
                         _this.x_cursor_icon.visible = false;
                     else
                         _this.o_cursor_icon.visible = false;
+                }
+                if (data['Previous-Turn'] != '-') {
+                    if (data['Turn'] == 'x') {
+                        _this.x_cursor_icon.x = _this.reapear_location_x;
+                        _this.x_cursor_icon.y = _this.reapear_location_y;
+                        _this.o_previous.x = previous_x;
+                        _this.x_previous.x = -100;
+                        _this.o_previous.y = previous_y;
+                        _this.x_previous.y = -100;
+                    }
+                    else {
+                        _this.o_cursor_icon.x = _this.reapear_location_x;
+                        _this.o_cursor_icon.y = _this.reapear_location_y;
+                        _this.x_previous.x = previous_x;
+                        _this.o_previous.x = -100;
+                        _this.x_previous.y = previous_y;
+                        _this.o_previous.y = -100;
+                    }
                 }
                 //Extra messages
                 if (data['Message'] != '') {
@@ -249,6 +303,9 @@ var GameSettings = /** @class */ (function () {
                 this_copy.x_previous = this_copy.add.image(900, 0, 'xG');
                 this_copy.o_cursor_icon = this_copy.add.image(900, 0, 'o');
                 this_copy.o_previous = this_copy.add.image(900, 0, 'oG');
+                this_copy.move_sfx = this_copy.sound.add('move', { pauseOnBlur: "false" });
+                this_copy.lose_sfx = this_copy.sound.add('win', { pauseOnBlur: "false" });
+                this_copy.win_sfx = this_copy.sound.add('lose', { pauseOnBlur: "false" });
                 //socket handlers
                 socket.socketListener('ready', function (data) {
                     this_copy.info_text.setText('Searching for players...');
@@ -264,6 +321,13 @@ var GameSettings = /** @class */ (function () {
                     var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
                     var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
                     //turns
+                    if (data['Message'].indexOf('wins') > -1 || data['Message'].indexOf('Won') > -1) {
+                        this_copy.win_sfx.play();
+                    }
+                    else if (data['Success'] == '1') {
+                        this_copy.move_sfx.play();
+                    }
+                    this_copy.move_sfx.play();
                     if (data['Previous-Turn'] != '-') {
                         if (data['Turn'] == 'x') {
                             this_copy.x_cursor_icon.x = reapear_location_x;
@@ -327,6 +391,10 @@ var GameSettings = /** @class */ (function () {
             this.x_board = [];
             this.o_board = [];
             this.rooms_list_arr = [];
+            this.game_start_sfx = null;
+            this.move_sfx = null;
+            this.lose_sfx = null;
+            this.win_sfx = null;
             this.info_text.x = 900;
             this.play_text.x = 30;
             this.play_text.y = 30;

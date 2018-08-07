@@ -1,5 +1,5 @@
 class Socket {
-	url:string = "http://96.22.104.33:32232"
+	url:string = "localhost:3801"
 	websocket:any = null
 
 	constructor(){	

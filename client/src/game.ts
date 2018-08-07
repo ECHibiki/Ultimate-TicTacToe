@@ -30,14 +30,55 @@ class GameSettings{
 
 		game = new Phaser.Game(config);
 		
-		function preload ()	{
+		document.body.addEventListener('notification-move', (notification:any)=>{
+			console.log('nmot')
+			if(document.hasFocus() == true){
+				do{
+					var x_ind = document.title.indexOf('(x)');			
+					if(x_ind > -1){
+						document.title = document.title.substr(x_ind + 3);
+					}
+					var o_ind = document.title.indexOf('(o)');
+					if(o_ind > -1){
+						document.title = document.title.substr(o_ind + 3);
+					}	
+					console.log(x_ind + 3)
+					console.log(o_ind + 3)
+				}
+				while (x_ind > -1 || o_ind > -1);
+			}
+			
+			if(document.hasFocus() == false){
+				do{
+					var x_ind = document.title.indexOf('(x)');			
+					if(x_ind > -1){
+						document.title = document.title.substr(x_ind + 3);
+					}
+					var o_ind = document.title.indexOf('(o)');
+					if(o_ind > -1){
+						document.title = document.title.substr(o_ind + 3);
+					}	
+					console.log(x_ind + 3)
+					console.log(o_ind + 3)
+				}
+				while (x_ind > 3 || o_ind > 3);
+				document.title = "(" + notification.detail + ") " + document.title;
+			}
+		});	
+		
+		function preload ()	{			
 			this.info_text =  this.add.text(10, 16, 'building game...', { fontSize: '22px', fill: '#fff' });
 
 			this.load.image('board', 'sprites/board.jpg');
 			this.load.image('x', 'sprites/x.png');
 			this.load.image('xG', 'sprites/xG.png');
 			this.load.image('o', 'sprites/o.png');
-			this.load.image('oG', 'sprites/oG.png');		
+			this.load.image('oG', 'sprites/oG.png');	
+
+			this.load.audio('start', ['sfx/game-start.mp3']);
+			this.load.audio('move', ['sfx/move-done.mp3']);
+			this.load.audio('win', ['sfx/win-fx.mp3']);
+			this.load.audio('lose', ['sfx/lose-fx.mp3']);
 			
 			this.play_text =  this.add.text(900, 16, 'Play', { fontSize: '32px', fill: '#fff' });
 			this.play_text.setInteractive();
@@ -52,6 +93,11 @@ class GameSettings{
 		function playGame(click_evnt:any){
 			console.log('press play');
 			console.log(click_evnt);
+			
+			this.game_start_sfx = this.sound.add('start', {pauseOnBlur:"false"});
+			this.move_sfx = this.sound.add('move', {pauseOnBlur:"false"});
+			this.lose_sfx = this.sound.add('win', {pauseOnBlur:"false"});
+			this.win_sfx = this.sound.add('lose', {pauseOnBlur:"false"});
 
 			this.spectate_text.x = 900
 			this.play_text.x = 900
@@ -74,6 +120,9 @@ class GameSettings{
 				this.x_previous = this.add.image(900, 0, 'xG');
 				this.o_cursor_icon = this.add.image(900, 0, 'o');	
 				this.o_previous = this.add.image(900, 0, 'oG');	
+				
+				this.game_start_sfx.play()
+				
 			});
 			
 			socket.socketListener('broken',(data:any)=>{
@@ -82,31 +131,28 @@ class GameSettings{
 			socket.socketListener('board-data',(data:any)=>{
 				var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18
 				var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18
-
+				
 				//turns
+				if(data['Message'].indexOf('wins') > -1 || data['Message'].indexOf('Won') > -1){
+					if(data[GameConstants.socket_id]['Piece'] == data['Turn']){
+						this.lose_sfx.play();
+					}
+					else{
+						this.win_sfx.play();
+					}
+				}
+				else if (data['Success'] == '1'){
+					this.move_sfx.play();
+				}
+				
+				var notif_ev = new CustomEvent('notification-move', { detail: data['Turn']});
+				document.body.dispatchEvent(notif_ev);
+				
 				if(data[GameConstants.socket_id]['Piece'] == data['Turn']){
 					this.place_in_progress = false;
 					this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move'])
 					this.players_turn = true
 					this.player_piece = data['Turn']	
-					if(data['Previous-Turn'] != '-'){
-						if( data['Turn'] == 'x'){
-							this.x_cursor_icon.x = this.reapear_location_x;
-							this.x_cursor_icon.y = this.reapear_location_y;
-							this.o_previous.x = previous_x;
-							this.x_previous.x = -100;
-							this.o_previous.y = previous_y;						
-							this.x_previous.y = -100;						
-						} 
-						else{
-							this.o_cursor_icon.x = this.reapear_location_x;
-							this.o_cursor_icon.y = this.reapear_location_y;
-							this.x_previous.x = previous_x;
-							this.o_previous.x = -100;
-							this.x_previous.y = previous_y;						
-							this.o_previous.y = -100;		
-						}
-					} 
 				}
 				else{
 					this.info_text.setText('Turn ' + data['Turn'] + '(opponent) - Move ' + data['Move']);
@@ -114,6 +160,24 @@ class GameSettings{
 					if( data['Turn'] == 'x') this.x_cursor_icon.visible = false;
 					else this.o_cursor_icon.visible = false;
 				}
+				if(data['Previous-Turn'] != '-'){
+					if( data['Turn'] == 'x'){
+						this.x_cursor_icon.x = this.reapear_location_x;
+						this.x_cursor_icon.y = this.reapear_location_y;
+						this.o_previous.x = previous_x;
+						this.x_previous.x = -100;
+						this.o_previous.y = previous_y;						
+						this.x_previous.y = -100;						
+					} 
+					else{
+						this.o_cursor_icon.x = this.reapear_location_x;
+						this.o_cursor_icon.y = this.reapear_location_y;
+						this.x_previous.x = previous_x;
+						this.o_previous.x = -100;
+						this.x_previous.y = previous_y;						
+						this.o_previous.y = -100;		
+					}
+				} 
 				//Extra messages
 				if(data['Message'] != ''){
 					this.info_text.setText(data['Message'])
@@ -228,6 +292,10 @@ class GameSettings{
 				this_copy.o_cursor_icon = this_copy.add.image(900, 0, 'o');	
 				this_copy.o_previous = this_copy.add.image(900, 0, 'oG');	
 				
+				this_copy.move_sfx = this_copy.sound.add('move', {pauseOnBlur:"false"});
+				this_copy.lose_sfx = this_copy.sound.add('win', {pauseOnBlur:"false"});
+				this_copy.win_sfx = this_copy.sound.add('lose', {pauseOnBlur:"false"});
+				
 				//socket handlers
 				socket.socketListener('ready', (data:any)=>{
 					this_copy.info_text.setText('Searching for players...');
@@ -245,7 +313,13 @@ class GameSettings{
 					var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18
 
 					//turns
-
+					if(data['Message'].indexOf('wins') > -1 || data['Message'].indexOf('Won') > -1){
+						this_copy.win_sfx.play();
+					}
+					else if (data['Success'] == '1'){
+						this_copy.move_sfx.play();
+					}
+					this_copy.move_sfx.play()
 					if(data['Previous-Turn'] != '-'){
 						if( data['Turn'] == 'x'){
 							this_copy.x_cursor_icon.x = reapear_location_x;
@@ -309,7 +383,13 @@ class GameSettings{
 			this.o_previous = null;
 			this.x_board = [];
 			this.o_board = [];
-			this.rooms_list_arr = [];			
+			this.rooms_list_arr = [];		
+			
+			this.game_start_sfx = null;
+			this.move_sfx = null;
+			this.lose_sfx = null;
+			this.win_sfx = null;
+			
 
 			this.info_text.x = 900;											
 			this.play_text.x = 30;

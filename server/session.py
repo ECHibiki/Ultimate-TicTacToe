@@ -44,7 +44,7 @@ def formSession(room_id):
 - - -
 - - -''',  'Turn':'x', 'Previous-Turn':'-', 'Move':0, socket_names[rand[0]]:{'Piece':'x', 'Client-Name':client_names[rand[0]]}, 
                                                       socket_names[rand[1]]:{'Piece':'o', 'Client-Name':client_names[rand[1]]}, 
-                                                      'Message':'', 'Observers':[]}
+                                                      'Message':'', 'Observers':[], 'Success':'0'}
    
 def emitBoard(room_id, target=None):
     if target==None:
@@ -86,9 +86,11 @@ def move(sid, position):
         else:
             sessions[room_id]['Message'] = ''
             swapTurn(room_id)
+        sessions[room_id]['Success'] = '1'
         emitBoard(room_id, target=room_id)
     #illegal
     else:
+        sessions[room_id]['Success'] = '0'
         emitBoard(room_id, target=sid)
     
 def validateTurn(sid, x, y, room_id):
