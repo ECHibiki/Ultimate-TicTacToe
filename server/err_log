@@ -1,16 +1,48 @@
 Traceback (most recent call last):
-  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 130, in onMove
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 151, in onMove
     session.move(socket_id, position)
   File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
     if validateTurn(sid, position['x'], position['y'], room_id):
   File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
     if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
-KeyError: 'RZ5fl|239e4545ee1c4f058db807185183d44c-8cgIq|e7ce61c3b8664f4c84914a3830e3e2dd'
+KeyError: 'tZf3r|27ad7a0122344e9fab676c3ff7b58802-tZf3r|4c9556bd057e4cf7947327e9536fed5e'
 Traceback (most recent call last):
-  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 130, in onMove
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 151, in onMove
     session.move(socket_id, position)
   File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
     if validateTurn(sid, position['x'], position['y'], room_id):
   File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
     if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
-KeyError: 'RZ5fl|239e4545ee1c4f058db807185183d44c-8cgIq|e7ce61c3b8664f4c84914a3830e3e2dd'
+KeyError: 'tZf3r|27ad7a0122344e9fab676c3ff7b58802-tZf3r|4c9556bd057e4cf7947327e9536fed5e'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 151, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'tZf3r|27ad7a0122344e9fab676c3ff7b58802-tZf3r|4c9556bd057e4cf7947327e9536fed5e'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 151, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'tZf3r|a0d9d0622b29479e82b10b177265a420-tZf3r|a79ea6bb8eae4241a99d12d8599843d7'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 151, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'tZf3r|a0d9d0622b29479e82b10b177265a420-tZf3r|a79ea6bb8eae4241a99d12d8599843d7'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 151, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'tZf3r|a0d9d0622b29479e82b10b177265a420-tZf3r|a79ea6bb8eae4241a99d12d8599843d7'

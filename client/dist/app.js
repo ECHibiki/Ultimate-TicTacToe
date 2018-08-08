@@ -36,6 +36,13 @@ var Socket = /** @class */ (function () {
     Socket.prototype.socketListener = function (event, fn) {
         this.websocket.on(event, fn);
     };
+    Socket.prototype.removeSocketListeners = function (listeners) {
+        var _this = this;
+        listeners.forEach(function (ele, ind) {
+            console.log(ele);
+            _this.websocket.off(ele);
+        });
+    };
     return Socket;
 }());
 var GameSettings = /** @class */ (function () {
@@ -44,6 +51,9 @@ var GameSettings = /** @class */ (function () {
         var info_text = null;
         var play_text = null;
         var spectate_text = null;
+        var cancel_text = null;
+        var back_text = null;
+        var leave_text = null;
         var client_id = '';
         var players_turn = false;
         var place_in_progress = false;
@@ -113,24 +123,36 @@ var GameSettings = /** @class */ (function () {
             this.spectate_text = this.add.text(900, 100, 'Spectate', { fontSize: '32px', fill: '#fff' });
             this.spectate_text.setInteractive();
             this.spectate_text.on('pointerdown', spectateMenu, this);
+            this.cancel_text = this.add.text(900, 100, 'Cancel', { fontSize: '32px', fill: '#fff' });
+            this.cancel_text.setInteractive();
+            this.cancel_text.on('pointerdown', cancelSearch, this);
+            this.back_text = this.add.text(900, 100, 'Back', { fontSize: '32px', fill: '#fff' });
+            this.back_text.setInteractive();
+            this.back_text.on('pointerdown', spectateMenuClear, this);
+            this.leave_text = this.add.text(900, 100, 'Leave', { fontSize: '32px', fill: '#fff' });
+            this.leave_text.setInteractive();
+            this.leave_text.on('pointerdown', leaveRoom, this);
         }
         function playGame(click_evnt) {
             var _this = this;
-            console.log('press play');
-            console.log(click_evnt);
             this.game_start_sfx = this.sound.add('start', { pauseOnBlur: "false" });
             this.move_sfx = this.sound.add('move', { pauseOnBlur: "false" });
             this.lose_sfx = this.sound.add('win', { pauseOnBlur: "false" });
             this.win_sfx = this.sound.add('lose', { pauseOnBlur: "false" });
             this.spectate_text.x = 900;
             this.play_text.x = 900;
+            this.cancel_text.x = 900;
             //socket handlers
             socket.socketListener('ready', function (data) {
                 _this.info_text.setText('Searching for players...');
                 _this.info_text.x = 10;
+                _this.info_text.y = 16;
+                _this.cancel_text.x = 10;
             });
             socket.socketListener('disconnect', function (data) {
                 _this.info_text.setText('Game server is offline');
+                _this.leave_text.x = 400;
+                _this.leave_text.y = 510;
             });
             socket.socketListener('join', function (data) {
                 _this.info_text.x = 25;
@@ -145,10 +167,16 @@ var GameSettings = /** @class */ (function () {
             });
             socket.socketListener('broken', function (data) {
                 _this.info_text.setText('Disconnected with other session');
+                _this.leave_text.x = 400;
+                _this.leave_text.y = 510;
             });
             socket.socketListener('board-data', function (data) {
                 var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
                 var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
+                if (data['Message'].indexOf('wins') > -1) {
+                    _this.leave_text.x = 400;
+                    _this.leave_text.y = 510;
+                }
                 //turns
                 if (data['Message'].indexOf('wins') > -1 || data['Message'].indexOf('Won') > -1) {
                     if (data[GameConstants.socket_id]['Piece'] == data['Turn']) {
@@ -207,8 +235,8 @@ var GameSettings = /** @class */ (function () {
                     _this.o_board[ind].destroy();
                 });
                 //board draw
-                var board = data['Board'].split('\n');
-                board.forEach(function (el, ind_y) {
+                var board_data = data['Board'].split('\n');
+                board_data.forEach(function (el, ind_y) {
                     var el_split = el.split(' ');
                     el_split.forEach(function (e, ind_x) {
                         if (ind_y == data['Previous-Turn'].split('|')[1] && ind_x == data['Previous-Turn'].split('|')[0])
@@ -263,6 +291,53 @@ var GameSettings = /** @class */ (function () {
             //send ready sign
             socket.sendSocket('ready', GameConstants.client_name);
         }
+        function cancelSearch(click_evnt) {
+            var _this = this;
+            this.play_text.x = 10;
+            this.spectate_text.x = 10;
+            this.info_text.x = 900;
+            this.cancel_text.x = 900;
+            socket.sendSocket('cancel', GameConstants.client_name);
+            socket.removeSocketListeners(['ready', 'disconnect', 'join', 'broken', 'board-data']);
+            //remove input handlers
+            this.input.off('pointerdown', function (event) {
+                if (_this.players_turn) {
+                    _this.place_in_progress = true;
+                    var y = event.y;
+                    if (y > board_height - 1)
+                        y = board_height - 1;
+                    var x = event.x;
+                    var seg_xy = {
+                        'x': Math.floor(x / (board_width / 9)),
+                        'y': Math.floor(y / (board_height / 9)),
+                    };
+                    _this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
+                    _this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
+                    socket.sendSocket('move', seg_xy);
+                }
+            }, this);
+            //remove input handlers
+            this.input.off('pointermove', function (event) {
+                if (_this.players_turn && _this.place_in_progress == false) {
+                    var y = event.y;
+                    if (y > board_height - 1)
+                        y = board_height - 1;
+                    var x = event.x;
+                    var seg_xy = {
+                        'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
+                        'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
+                    };
+                    if (_this.player_piece == 'x') {
+                        _this.x_cursor_icon.x = seg_xy['x'];
+                        _this.x_cursor_icon.y = seg_xy['y'];
+                    }
+                    else {
+                        _this.o_cursor_icon.x = seg_xy['x'];
+                        _this.o_cursor_icon.y = seg_xy['y'];
+                    }
+                }
+            }, this);
+        }
         function spectateMenu(click_evnt) {
             var _this = this;
             console.log('press spec');
@@ -271,6 +346,7 @@ var GameSettings = /** @class */ (function () {
             this.info_text.x = 900;
             this.play_text.x = 900;
             this.spectate_text.x = 900;
+            this.back_text.x = 250;
             socket.socketListener('room-fill', function (rooms_resp) {
                 console.log(rooms_resp);
                 var num = 0;
@@ -283,6 +359,11 @@ var GameSettings = /** @class */ (function () {
                             _this.rooms_list_arr.forEach(function (el, ind) {
                                 _this.rooms_list_arr[ind].destroy();
                             });
+                            _this.rooms_list_arr.forEach(function (el, ind) {
+                                _this.rooms_list_arr.splice(ind);
+                            });
+                            socket.removeSocketListeners(['room-fill']);
+                            _this.back_text.x = 900;
                             spectateRoom(room_to_join, _this);
                         }, _this);
                         num++;
@@ -291,12 +372,28 @@ var GameSettings = /** @class */ (function () {
                 }
             }, this);
         }
+        function spectateMenuClear(click_evnt) {
+            var _this = this;
+            this.play_text.x = 10;
+            this.spectate_text.x = 10;
+            this.back_text.x = 900;
+            this.rooms_list_arr.forEach(function (el, ind) {
+                _this.rooms_list_arr[ind].destroy();
+            });
+            this.rooms_list_arr.forEach(function (el, ind) {
+                _this.rooms_list_arr.splice(ind);
+            });
+            socket.removeSocketListeners(['room-fill']);
+        }
         function spectateRoom(room, this_copy) {
+            var _this = this;
             console.log(room);
             socket.sendSocket('spectate-room', { 'client_name': GameConstants.client_name, 'room': room });
             socket.socketListener('spectate-join', function (conf) {
                 this_copy.info_text.x = 25;
                 this_copy.info_text.y = 510;
+                this_copy.leave_text.x = 400;
+                this_copy.leave_text.y = 510;
                 this_copy.info_text.setText('Setting up game...');
                 this_copy.board = this_copy.add.image(250, 250, 'board');
                 this_copy.x_cursor_icon = this_copy.add.image(900, 0, 'x');
@@ -320,6 +417,10 @@ var GameSettings = /** @class */ (function () {
                 socket.socketListener('board-data', function (data) {
                     var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
                     var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
+                    if (data['Message'].indexOf('wins') > -1) {
+                        _this.leave_text.x = 400;
+                        _this.leave_text.y = 510;
+                    }
                     //turns
                     if (data['Message'].indexOf('wins') > -1 || data['Message'].indexOf('Won') > -1) {
                         this_copy.win_sfx.play();
@@ -364,8 +465,8 @@ var GameSettings = /** @class */ (function () {
                         this_copy.o_board[ind].destroy();
                     });
                     //board draw
-                    var board = data['Board'].split('\n');
-                    board.forEach(function (el, ind_y) {
+                    var board_data = data['Board'].split('\n');
+                    board_data.forEach(function (el, ind_y) {
                         var el_split = el.split(' ');
                         el_split.forEach(function (e, ind_x) {
                             if (ind_y == data['Previous-Turn'].split('|')[1] && ind_x == data['Previous-Turn'].split('|')[0])
@@ -380,6 +481,81 @@ var GameSettings = /** @class */ (function () {
                     });
                 });
                 socket.sendSocket('spectate-connect', { 'client_name': GameConstants.client_name, 'room': room });
+            }, this);
+        }
+        function leaveRoom(click_evnt) {
+            var _this = this;
+            this.play_text.x = 10;
+            this.spectate_text.x = 10;
+            this.info_text.x = 900;
+            this.cancel_text.x = 900;
+            this.back_text.x = 900;
+            this.leave_text.x = 900;
+            this.board.x = 900;
+            this.board.destroy();
+            this.board = '';
+            this.x_cursor_icon.x = 900;
+            this.x_cursor_icon.destroy();
+            this.x_previous.x = 900;
+            this.x_previous.destroy();
+            this.o_cursor_icon.x = 900;
+            this.o_cursor_icon.destroy();
+            this.o_previous.x = 900;
+            this.o_previous.destroy();
+            //board clear
+            this.x_board.forEach(function (el, ind) {
+                _this.x_board[ind].x = 900;
+                _this.x_board[ind].destroy();
+            });
+            this.o_board.forEach(function (el, ind) {
+                _this.o_board[ind].x = 900;
+                _this.o_board[ind].destroy();
+            });
+            this.x_board.forEach(function (el, ind) {
+                _this.x_board.splice(ind);
+            });
+            this.o_board.forEach(function (el, ind) {
+                _this.o_board.splice(ind);
+            });
+            socket.sendSocket('leave', GameConstants.client_name);
+            socket.removeSocketListeners(['spectate-join', 'ready', 'disconnect', 'join', 'broken', 'board-data']);
+            //remove input handlers
+            this.input.off('pointerdown', function (event) {
+                if (_this.players_turn) {
+                    _this.place_in_progress = true;
+                    var y = event.y;
+                    if (y > board_height - 1)
+                        y = board_height - 1;
+                    var x = event.x;
+                    var seg_xy = {
+                        'x': Math.floor(x / (board_width / 9)),
+                        'y': Math.floor(y / (board_height / 9)),
+                    };
+                    _this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
+                    _this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
+                    socket.sendSocket('move', seg_xy);
+                }
+            }, this);
+            //remove input handlers
+            this.input.off('pointermove', function (event) {
+                if (_this.players_turn && _this.place_in_progress == false) {
+                    var y = event.y;
+                    if (y > board_height - 1)
+                        y = board_height - 1;
+                    var x = event.x;
+                    var seg_xy = {
+                        'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
+                        'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
+                    };
+                    if (_this.player_piece == 'x') {
+                        _this.x_cursor_icon.x = seg_xy['x'];
+                        _this.x_cursor_icon.y = seg_xy['y'];
+                    }
+                    else {
+                        _this.o_cursor_icon.x = seg_xy['x'];
+                        _this.o_cursor_icon.y = seg_xy['y'];
+                    }
+                }
             }, this);
         }
         function create() {

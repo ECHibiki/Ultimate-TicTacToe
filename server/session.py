@@ -124,21 +124,32 @@ def reduce3X3(x, y, nine_x_nine):
 def propperSegment(x, y, room_id):
     if sessions[room_id]['Previous-Turn'] != '-':
         xy_prev = sessions[room_id]['Previous-Turn'].split('|')
-        x_prev = int(xy_prev[0]) % 3
-        x_cur = floor(x / 3)
-        y_prev = int(xy_prev[1]) % 3
-        y_cur = floor(y / 3)
-           
+        x_quad_prev = int(xy_prev[0]) % 3
+        x_quad_cur = floor(x / 3)
+        y_quad_prev = int(xy_prev[1]) % 3
+        y_quad_cur = floor(y / 3)
+        
+        if checkGridFull(reduce3X3(x_quad_prev * 3, y_quad_prev * 3, sessions[room_id]['Board'])):
+            sessions[room_id]['Message'] = 'Section Exausted - Turn '+ sessions[room_id]['Turn'] 
+            return True 
+        
         reduced_check  = sessions[room_id]['Reduced-Board'].split('\n')
-        if reduced_check[y_prev].split(' ')[x_prev] != '-':
+        if reduced_check[y_quad_prev].split(' ')[x_quad_prev] != '-':
             return True    
-        if x_prev == x_cur and y_prev == y_cur:
+        if x_quad_prev == x_quad_cur and y_quad_prev == y_quad_cur:
             return True
         else:
             return False
     else:
         return True
 
+def checkGridFull(three_x_three):
+    for row in three_x_three:
+        for col in row:
+            if col == '-':
+                return False
+    return True
+    
 def checkGridWon(three_x_three):    
     #row
     for row in three_x_three:

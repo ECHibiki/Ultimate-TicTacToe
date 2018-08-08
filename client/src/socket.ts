@@ -20,4 +20,11 @@ class Socket {
 	socketListener(event:any, fn:any){
 		this.websocket.on(event, fn);
 	}
+	
+	removeSocketListeners(listeners:string[]):void{
+		listeners.forEach((ele:string, ind:number)=>{
+			console.log(ele)
+			this.websocket.off(ele)
+		});
+	}
 }

@@ -21,8 +21,8 @@ def checkJoin(sid,client_id):
         return False, None
     else:
         #grabs 1st entry with a split and seperates written client ID and socketID
-        return True, formRoom(waiting_list_text.split('\n')[0].split('-')[0], waiting_list_text.split('\n')[0].split('-')[1], sid, client_id)
-
+        return True, formRoom(waiting_list_text.split('\n')[0].split('-')[0], waiting_list_text.split('\n')[0].split('-')[1], sid, client_id)   
+        
 def checkDisconnect(sid):
     room_to_clear = findRoomBySID(sid)
     if room_to_clear != '':

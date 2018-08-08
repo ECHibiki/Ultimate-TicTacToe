@@ -11,7 +11,7 @@ import traceback
 
 app = Flask(__name__)
 app.secret_key = 'hjksdertyhoua/sdfg'
-socketio = SocketIO(app, ping_timeout=20, ping_interval=10, allow_upgrades=True, engineio_logger=False)
+socketio = SocketIO(app, allow_upgrades=True, engineio_logger=False) #ping_timeout=20, ping_interval=10,
 @app.route('/')
 def gameRoute():
     #return open("client/builds/game.js", 'r').read()
@@ -59,6 +59,27 @@ def onReady(client_name):
         err_log.write(traceback.format_exc())
         print(traceback.format_exc())
 
+@socketio.on('cancel')
+def onCancel(client_name):
+    try:
+        socket_id = request.sid
+        session_closed, room_id =  matchmake.checkDisconnect(socket_id);
+        if session_closed:
+            session.close(room_id)
+            chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room_id)
+            matchmake.clearRoom(room_id, socket_id)    
+        else:
+            room_found, room, index = matchmake.checkObserverDisconnect(socket_id)
+            if room_found:
+                del matchmake._rooms[room]['Viewers'][index]
+                chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room)
+                chat.roomChatInfo(socket_id,  matchmake.sid_cid_pairs[socket_id]) 
+        print((u'Client canceled: ' + client_name).encode('utf-8'))
+    except Exception:
+        err_log = open('err_log', 'a', encoding='utf-8')
+        err_log.write(traceback.format_exc())
+        print(traceback.format_exc())       
+
 @socketio.on('disconnect')
 def onDisconnect():
     try:
@@ -76,6 +97,27 @@ def onDisconnect():
                 chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room)
                 chat.roomChatInfo(socket_id,  matchmake.sid_cid_pairs[socket_id]) 
         print(u"Client disconnect: " + socket_id)
+    except Exception:
+        err_log = open('err_log', 'a', encoding='utf-8')
+        err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
+
+@socketio.on('leave')
+def onLeave(leave_client):
+    try:
+        socket_id = request.sid
+        session_closed, room_id =  matchmake.checkDisconnect(socket_id);
+        if session_closed:
+            session.close(room_id)
+            chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room_id)
+            matchmake.clearRoom(room_id, socket_id)    
+        else:
+            room_found, room, index = matchmake.checkObserverDisconnect(socket_id)
+            if room_found:
+                del matchmake._rooms[room]['Viewers'][index]
+                chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room)
+                chat.roomChatInfo(socket_id,  matchmake.sid_cid_pairs[socket_id]) 
+        print(u"Client left: " + socket_id)
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
@@ -116,7 +158,7 @@ def onLoad(client_name):
         client_id = client_name
         matchmake.createSIDCIDPair(socket_id, client_id)
         chat.globalChatInfo(socket_id, client_id)
-        print(u"Client load: " + client_name)
+        print((u"Client load: " + client_name).encode('utf-8'))
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
