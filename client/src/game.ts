@@ -1,6 +1,6 @@
 class GameSettings{	
 	constructor(socket:any){
-		
+				
 		var game:any = null; 
 		var info_text:any = null;
 		var play_text:any = null;		
@@ -8,9 +8,7 @@ class GameSettings{
 		var cancel_text:any = null;
 		var back_text:any = null;
 		var leave_text:any = null;
-		
-		
-		
+				
 		var client_id:string = ''
 		var players_turn:boolean = false
 		var place_in_progress:boolean = false
@@ -115,7 +113,6 @@ class GameSettings{
 
 			this.spectate_text.x = 900
 			this.play_text.x = 900
-			this.cancel_text.x = 900
 						
 			//socket handlers
 			socket.socketListener('ready', (data:any)=>{
@@ -131,6 +128,8 @@ class GameSettings{
 			});
 			
 			socket.socketListener('join', (data:any)=>{
+				this.cancel_text.x = 900
+				
 				this.info_text.x = 25;
 				this.info_text.y = 510;
 				this.info_text.setText('Setting up game...')

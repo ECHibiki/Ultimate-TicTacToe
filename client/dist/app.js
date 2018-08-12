@@ -141,7 +141,6 @@ var GameSettings = /** @class */ (function () {
             this.win_sfx = this.sound.add('lose', { pauseOnBlur: "false" });
             this.spectate_text.x = 900;
             this.play_text.x = 900;
-            this.cancel_text.x = 900;
             //socket handlers
             socket.socketListener('ready', function (data) {
                 _this.info_text.setText('Searching for players...');
@@ -155,6 +154,7 @@ var GameSettings = /** @class */ (function () {
                 _this.leave_text.y = 510;
             });
             socket.socketListener('join', function (data) {
+                _this.cancel_text.x = 900;
                 _this.info_text.x = 25;
                 _this.info_text.y = 510;
                 _this.info_text.setText('Setting up game...');
@@ -760,5 +760,34 @@ window.onload = function () {
         alert('Server had an error\n ' + err);
     });
     var game = new GameSettings(socket);
+    //scale everything to good size
+    //scale everything to good size
+    var win_width = window.innerWidth / window.devicePixelRatio;
+    console.log(win_width);
+    if (win_width < 1400) {
+        var scale = win_width / 1400;
+        var height = 550 * window.devicePixelRatio * scale;
+        var width = 500 * window.devicePixelRatio * scale;
+        document.getElementById('phaser-game').firstChild.style.height = height + 'px';
+        document.getElementById('phaser-game').firstChild.style.width = width + 'px';
+        document.getElementById('game-details').style.width = width + 'px';
+        document.getElementById('game-details').style.height = height + 'px';
+    }
+    else {
+        var scale = 1.0;
+        var height = 550 * window.devicePixelRatio * scale;
+        var width = 500 * window.devicePixelRatio * scale;
+        document.getElementById('phaser-game').firstChild.style.height = height + 'px';
+        document.getElementById('phaser-game').firstChild.style.width = width + 'px';
+        document.getElementById('game-details').style.width = width + 'px';
+        document.getElementById('game-details').style.height = height + 'px';
+    }
+    var ul_arr = document.querySelectorAll("ul[ul-tag='']");
+    ul_arr[0].style.height = document.getElementById('game-details').offsetHeight -
+        (100 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
+    ul_arr[1].style.height = document.getElementById('game-details').offsetHeight -
+        (180 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
+    ul_arr[2].style.height = document.getElementById('game-details').offsetHeight -
+        (183 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
 };
 //# sourceMappingURL=app.js.map

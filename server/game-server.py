@@ -6,6 +6,7 @@ import logging
 import matchmake
 import session
 import chat
+import misc
 
 import traceback
 
@@ -52,7 +53,7 @@ def onReady(client_name):
         if session_formed:
             session.start(room_id)
         chat.roomChatInfo(socket_id, client_id) 
-        chat.roomServerMessage('Client ' + client_id + ' has joined the room',room_id)
+        chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
         print((u'Client ready: ' + client_name).encode('utf-8'))
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
@@ -66,13 +67,13 @@ def onCancel(client_name):
         session_closed, room_id =  matchmake.checkDisconnect(socket_id);
         if session_closed:
             session.close(room_id)
-            chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room_id)
+            chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
             matchmake.clearRoom(room_id, socket_id)    
         else:
             room_found, room, index = matchmake.checkObserverDisconnect(socket_id)
             if room_found:
                 del matchmake._rooms[room]['Viewers'][index]
-                chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room)
+                chat.roomServerMessage('Client ' +misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id])] + ' has left the room', room)
                 chat.roomChatInfo(socket_id,  matchmake.sid_cid_pairs[socket_id]) 
         print((u'Client canceled: ' + client_name).encode('utf-8'))
     except Exception:
@@ -88,13 +89,13 @@ def onDisconnect():
         session_closed, room_id =  matchmake.checkDisconnect(socket_id);
         if session_closed:
             session.close(room_id)
-            chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room_id)
+            chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
             matchmake.clearRoom(room_id, socket_id)    
         else:
             room_found, room, index = matchmake.checkObserverDisconnect(socket_id)
             if room_found:
                 del matchmake._rooms[room]['Viewers'][index]
-                chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room)
+                chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room)
                 chat.roomChatInfo(socket_id,  matchmake.sid_cid_pairs[socket_id]) 
         print(u"Client disconnect: " + socket_id)
     except Exception:
@@ -109,13 +110,13 @@ def onLeave(leave_client):
         session_closed, room_id =  matchmake.checkDisconnect(socket_id);
         if session_closed:
             session.close(room_id)
-            chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room_id)
+            chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
             matchmake.clearRoom(room_id, socket_id)    
         else:
             room_found, room, index = matchmake.checkObserverDisconnect(socket_id)
             if room_found:
                 del matchmake._rooms[room]['Viewers'][index]
-                chat.roomServerMessage('Client ' + matchmake.sid_cid_pairs[socket_id] + ' has left the room', room)
+                chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room)
                 chat.roomChatInfo(socket_id,  matchmake.sid_cid_pairs[socket_id]) 
         print(u"Client left: " + socket_id)
     except Exception:
@@ -145,7 +146,7 @@ def onSpectate(data):
         room_id = data['room']
         session.emitBoard(room_id, socket_id)
         chat.roomChatInfo(socket_id, client_id) 
-        chat.roomServerMessage('Client ' + client_id + ' has joined the room (Spectating)',room_id)
+        chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room (Spectating)',room_id)
         print(u"Client spectating: " + str(data))
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
