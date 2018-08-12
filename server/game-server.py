@@ -13,22 +13,22 @@ import traceback
 app = Flask(__name__)
 app.secret_key = 'hjksdertyhoua/sdfg'
 socketio = SocketIO(app, allow_upgrades=True, engineio_logger=False) #ping_timeout=20, ping_interval=10,
-@app.route('/')
-def gameRoute():
-    #return open("client/builds/game.js", 'r').read()
-    return open('index.html', 'r', encoding='utf-8', errors='ignore').read()
+# @app.route('/')
+# def gameRoute():
+    # #return open("client/builds/game.js", 'r').read()
+    # return open('index.html', 'r', encoding='utf-8', errors='ignore').read()
     
-@app.route('/<path:path>')
-def rscRoute(path):
-    return send_from_directory('',path)
+# @app.route('/<path:path>')
+# def rscRoute(path):
+    # return send_from_directory('',path)
 
-@app.route('/sprites/<path:path>')
-def spriteRoute(path):
-    return send_from_directory('sprites', path)
+# @app.route('/sprites/<path:path>')
+# def spriteRoute(path):
+    # return send_from_directory('sprites', path)
 
-@app.route('/sfx/<path:path>')
-def sfxRoute(path):
-    return send_from_directory('sfx', path)    
+# @app.route('/sfx/<path:path>')
+# def sfxRoute(path):
+    # return send_from_directory('sfx', path)        
     
 @socketio.on('ping')
 def handleMessage(message):
@@ -73,7 +73,7 @@ def onCancel(client_name):
             room_found, room, index = matchmake.checkObserverDisconnect(socket_id)
             if room_found:
                 del matchmake._rooms[room]['Viewers'][index]
-                chat.roomServerMessage('Client ' +misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id])] + ' has left the room', room)
+                chat.roomServerMessage('Client ' +misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room)
                 chat.roomChatInfo(socket_id,  matchmake.sid_cid_pairs[socket_id]) 
         print((u'Client canceled: ' + client_name).encode('utf-8'))
     except Exception:
@@ -218,4 +218,6 @@ def onRoomFill(fr_message):
 # if __name__ == '__main__':
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.NOTSET)
+print('server setting')
 socketio.run(app, port=3801, host='0.0.0.0', debug=True)
+print('server set')

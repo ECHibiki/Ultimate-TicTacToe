@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_ro
 
 _rooms = {}
 sid_cid_pairs = {}
+waiting_users = []
 
 # from https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
 import string
@@ -14,14 +15,12 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 def checkJoin(sid,client_id):
-    waiting_list_handle = open('waiting', 'r', encoding='utf-8')
-    waiting_list_text = waiting_list_handle.read()
-    if waiting_list_text.find('\n') == -1:
+    if len(waiting_users) == 0:
         addSID(sid,client_id)
         return False, None
     else:
         #grabs 1st entry with a split and seperates written client ID and socketID
-        return True, formRoom(waiting_list_text.split('\n')[0].split('-')[0], waiting_list_text.split('\n')[0].split('-')[1], sid, client_id)   
+        return True, formRoom(waiting_users[0].decode('utf-8').split('\n')[0].split('-')[0], waiting_users[0].decode('utf-8').split('\n')[0].split('-')[1], sid, client_id)   
         
 def checkDisconnect(sid):
     room_to_clear = findRoomBySID(sid)
@@ -50,27 +49,20 @@ def findRoomBySID(sid):
     return room_to_clear
         
 def addSID(sid, cid):
-    waiting_list_handle = open('waiting', 'a+', encoding='utf-8')
-    waiting_list_handle.write(sid + u'-' + cid + u'\n')
-    waiting_list_handle.close()
+    waiting_users.append((sid + u'-' + cid).encode('utf-8'))
         
 def clearSID(sid):
-    waiting_list_handle = open('waiting', 'r+', encoding='utf-8')
-    waiting_list_text = waiting_list_handle.read()
-    waiting_list_handle.close()
-
-    if waiting_list_text.find(sid) == -1:
+    found = False
+    index = -1
+    for pos, user in enumerate(waiting_users):
+        if user.decode('utf-8').find(sid) != -1:
+            found = True
+            index = pos
+    if not found:
         return
     
-    waiting_list_arr = waiting_list_text.split('\n')
-    for index, item in enumerate(waiting_list_arr):
-        if item.find(sid) > -1:
-            del waiting_list_arr[index]
-    waiting_list_text =  '\n'.join(waiting_list_arr)
-    
-    waiting_list_handle = open('waiting', 'w', encoding='utf-8')
-    waiting_list_handle.write(waiting_list_text)
-    waiting_list_handle.close()
+    del waiting_users[index]
+
   
 def formRoom(sid1, cid1, sid2, cid2):
     print((cid1 + u' vs. ' + cid2).encode('utf-8'))
