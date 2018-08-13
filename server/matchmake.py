@@ -8,6 +8,7 @@ waiting_users = []
 # from https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
 import string
 import random
+import traceback
 
 import misc
 
@@ -34,9 +35,14 @@ def checkObserverDisconnect(sid):
     for room in _rooms:
         print((str(_rooms[room]['Viewers'])).encode('utf-8'))
         for index, viewer in enumerate(_rooms[room]['Viewers']):
-            if viewer == misc.generateNameTag(sid, sid_cid_pairs[sid]):           
-                    return True, room, index
-    
+            try:
+                if viewer == misc.generateNameTag(sid, sid_cid_pairs[sid]):           
+                        return True, room, index
+            except:
+                err_log = open('err_log', 'a', encoding='utf-8')
+                err_log.write(traceback.format_exc())
+                print(traceback.format_exc())
+
     return False, None, -1      
 
 def findRoomBySID(sid):

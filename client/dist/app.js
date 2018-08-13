@@ -61,8 +61,8 @@ var GameSettings = /** @class */ (function () {
         var board_width = 500;
         var board_height = 500;
         var game_lower_padding = 50;
-        var reapear_location_x = -100;
-        var reapear_location_y = -100;
+        var reapear_location_x = 900;
+        var reapear_location_y = 900;
         var config = {
             type: Phaser.AUTO,
             width: board_width,
@@ -196,14 +196,18 @@ var GameSettings = /** @class */ (function () {
                     _this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move']);
                     _this.players_turn = true;
                     _this.player_piece = data['Turn'];
+                    if (data['Turn'] == 'x')
+                        _this.x_cursor_icon.visible = true;
+                    else
+                        _this.o_cursor_icon.visible = true;
                 }
                 else {
                     _this.info_text.setText('Turn ' + data['Turn'] + '(opponent) - Move ' + data['Move']);
                     _this.players_turn = false;
-                    if (data['Turn'] == 'x')
-                        _this.x_cursor_icon.visible = false;
-                    else
-                        _this.o_cursor_icon.visible = false;
+                    _this.x_cursor_icon.visible = false;
+                    _this.x_cursor_icon.x = 900;
+                    _this.o_cursor_icon.visible = false;
+                    _this.o_cursor_icon.x = 900;
                 }
                 if (data['Previous-Turn'] != '-') {
                     if (data['Turn'] == 'x') {
@@ -711,6 +715,8 @@ var RoomChat = /** @class */ (function (_super) {
             document.getElementById('room-name').textContent = 'GameID: ' + response_list['Room'];
             var viewers = '';
             response_list['Viewers'].forEach(function (ele, ind) {
+                if (ele.length > 20)
+                    ele = ele.substr(0, 20) + '...';
                 if (ind == 0) {
                     viewers = ele;
                     return;
@@ -784,10 +790,10 @@ window.onload = function () {
     }
     var ul_arr = document.querySelectorAll("ul[ul-tag='']");
     ul_arr[0].style.height = document.getElementById('game-details').offsetHeight -
-        (100 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
+        (85 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
     ul_arr[1].style.height = document.getElementById('game-details').offsetHeight -
-        (180 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
+        (123 + document.getElementById('rc-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
     ul_arr[2].style.height = document.getElementById('game-details').offsetHeight -
-        (183 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
+        (168 + document.getElementById('s-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
 };
 //# sourceMappingURL=app.js.map

@@ -137,6 +137,7 @@ def onSpectate(data):
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
     
 @socketio.on('spectate-connect')
 def onSpectate(data):
@@ -151,6 +152,7 @@ def onSpectate(data):
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
     
 @socketio.on('client-load')
 def onLoad(client_name):
@@ -163,6 +165,7 @@ def onLoad(client_name):
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
  
 @socketio.on('move')
 def onMove(position):
@@ -175,6 +178,7 @@ def onMove(position):
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
 
 @socketio.on('global-client-message')
 def onGlobalMessage(g_message):
@@ -185,6 +189,7 @@ def onGlobalMessage(g_message):
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
     
 @socketio.on('global-fill')
 def onGlobalFill(fg_message):
@@ -195,6 +200,7 @@ def onGlobalFill(fg_message):
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
 
 @socketio.on('room-client-message')
 def onRoomMessage(r_message):
@@ -205,6 +211,7 @@ def onRoomMessage(r_message):
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
 
 @socketio.on('room-fill')
 def onRoomFill(fr_message):
@@ -214,10 +221,11 @@ def onRoomFill(fr_message):
     except Exception:
         err_log = open('err_log', 'a', encoding='utf-8')
         err_log.write(traceback.format_exc())
+        print(traceback.format_exc())
  
 # if __name__ == '__main__':
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.NOTSET)
 print('server setting')
-socketio.run(app, port=3801, host='0.0.0.0', debug=True)
+socketio.run(app, port=3801, host='0.0.0.0', debug=False)
 print('server set')

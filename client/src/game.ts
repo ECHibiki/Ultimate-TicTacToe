@@ -17,8 +17,8 @@ class GameSettings{
 		var board_height:number = 500
 		var game_lower_padding = 50
 		
-		var reapear_location_x:number = -100;
-		var reapear_location_y:number = -100;
+		var reapear_location_x:number = 900;
+		var reapear_location_y:number = 900;
 		
 		var config = {
 			type: Phaser.AUTO,
@@ -176,13 +176,18 @@ class GameSettings{
 					this.place_in_progress = false;
 					this.info_text.setText('Turn ' + data['Turn'] + '(you) - Move ' + data['Move'])
 					this.players_turn = true
-					this.player_piece = data['Turn']	
+					this.player_piece = data['Turn']
+					if(data['Turn'] == 'x') this.x_cursor_icon.visible = true;
+					else this.o_cursor_icon.visible = true;
+					
 				}
 				else{
 					this.info_text.setText('Turn ' + data['Turn'] + '(opponent) - Move ' + data['Move']);
 					this.players_turn = false;
-					if( data['Turn'] == 'x') this.x_cursor_icon.visible = false;
-					else this.o_cursor_icon.visible = false;
+					this.x_cursor_icon.visible = false;
+					this.x_cursor_icon.x = 900;
+					this.o_cursor_icon.visible = false;
+					this.o_cursor_icon.x = 900;
 				}
 				if(data['Previous-Turn'] != '-'){
 					if( data['Turn'] == 'x'){

@@ -28,6 +28,7 @@ class RoomChat extends Chat{
 			var viewers = ''
 			
 			response_list['Viewers'].forEach((ele:string, ind:number)=>{
+				if(ele.length > 20) ele = ele.substr(0,20) + '...'
 				if (ind == 0){
 					viewers = ele;
 					return

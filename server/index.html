@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-	<meta name="viewport" content="width=960, initial-scale=1">
+	<meta name="viewport" content="width=960, initial-scale=0.5">
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.min.js"></script>
@@ -12,7 +12,7 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <title>Ultimate TicTacToe</title>
     <link rel="stylesheet" href="app.css?6" type="text/css" />
-	<script src="app.min.js?s6"></script>
+	<script src="app.min.js?s19a"></script>
 </head>
 <body style=''>
 	<div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -22,14 +22,15 @@
 	  </button>
 	<!-- Ripped from https://getbootstrap.com/docs/4.1/components/alerts/ -->
 	</div>
-	<div class='container pt-5'>
+	<div class='container px-4 pb-5 pt-1' style='background-color:rgba(234, 168, 140,0.8);'>
 		<div>
-		<h1>Ultimate Tic-Tac-Toe</h1>
+		<h1 class='display-4 px-0 py-4'>Ultimate Tic-Tac-Toe</h1>
 		</div>
-		<div class='d-flex flex-row' style=''>
-			<div id='phaser-game' class='flex-fill' style='background-color:rgba(234, 188, 76,0.3);;overflow:visible'></div>
+		<div class='d-flex flex-row p-0 m-0' style=''>
+			<div id='phaser-game' class='flex ' style=';overflow:visible'></div>
 		<!-- Use ul-tag to set the size of items in game-details  -->
-			<div id='game-details' class='flex-fill bg-white' style='' >
+			<div id='game-details' class='flex-fill bg-white ml-2' style='overflow: hidden;border: inset 1.5px purple'>
+			<!--  -->
 				<ul class="nav nav-tabs" id='info-tabs' role='tablist'>
 					<li class="nav-item">
 						<a class="nav-link" id='rules-tab' data-toggle='tab' href="#rules" role='tab' aria-controls='rules' aria-selected='false'>Rules</a>
@@ -62,15 +63,15 @@
 						<!-- <br/> -->
 					</div>	
 					<div id='room-chat' class='tab-pane fade show active' role='tabpanel' aria-labelledby='chat-tab' style=''>
-						<h2 class='text-center'>Room Chat</h2>
+						<h2 class='text-center' id='rc-h2'>Room Chat</h2>
 						<div class='border-dark rounded bg-secondary mx-0 mt-0 mb-2' id='room-chat-details' style='opacity:1.0'>
-							<div class='container border px-4 py-2 bg-white' id='room-upper-info'>
+							<div class='container border px-4 py-2 bg-white' style='white-space: wrap; ' id='room-upper-info'>
 								<h4 style='opacity:1.0 dispaly-4' id='room-name'></h4>
-								<span class='small' style='opacity:1.0' id='challengers'></span>
+								<span class='small' style='opacity:1.0;' id='challengers'></span>
 							</div>
 							<div class='row p-0 m-0 bg-white'>
 								<div class='col-12 border rounded px-0 pt-2 pb-0 bg-light' id='room-chat-log'  style='overflow: auto' >
-									<ul class='pl-0 pr-2 py-2' ul-tag='' style='list-style:none;overflow-y:auto;overflow-x:hidden;'>
+									<ul class='pl-0 pr-2 py-2' ul-tag='' style='list-style:none;overflow-y:auto;overflow-x:auto;'>
 									</ul>
 								<div class='border rounded row p-0 m-0 bg-light' id='room-chat-box'>
 									<a class='col-2 border text-center text-truncate font-weight-light font-italic px-2 py-1 btn active room-username' href="javascript:void();" id='room-username' role='button' aria-pressed='true' style='opacity:1.0'></a>
@@ -81,17 +82,17 @@
 						</div>
 					</div>	
 					<div id='settings' class='tab-pane fade p-4' role='tabpanel' aria-labelledby='settings-tab' style=''>
-						<h2 class='text-center'>Settings</h2>
+						<h2 class='text-center' id='s-h2'>Settings</h2>
 							<p class='small'>Settings will take effect next game</p>
 							<ul style='list-style:none;padding:0px;overflow-y:auto' ul-tag=''>
 								<li style='padding:4px 0px'><input type='button' class='align-center' value='Set Name' id='name-set'></li>
 								<li style='padding:4px 0px'><a class='' style='color:#C70039;' href='https://github.com/ECHibiki/Ultimate-TicTacToe/issues'>Issues or suggestions?</a></li>
 							</ul>
 					</div>	
-				</div>
-				<div class='text-center px-0 pb-0 pt-0' id='added-msg'>
-					<hr/>
-					<a href='https://www.youtube.com/watch?v=jaIo82uT0qs' style='color:#C70039;' class='font-weight-light' target='_blank'>Break the rules</a>
+					<div class='text-center px-0 pb-0 pt-0' id='added-msg'>
+						<hr style='margin-top:0px'/>
+						<a href='https://www.youtube.com/watch?v=jaIo82uT0qs' style='color:#C70039;' class='font-weight-light' target='_blank'>Break the rules</a>
+					</div>
 				</div>
 			</div>
 		</div>

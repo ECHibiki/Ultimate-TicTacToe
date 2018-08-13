@@ -63,9 +63,9 @@ window.onload = () => {
     }
 		var ul_arr = (<NodeListOf<HTMLElement>>document.querySelectorAll("ul[ul-tag='']"));
         ul_arr[0].style.height = document.getElementById('game-details')!.offsetHeight - 
-											(100 + document.getElementById('r-h2')!.offsetHeight + document.getElementById('added-msg')!.offsetHeight +  document.getElementById('info-tabs')!.offsetHeight) + 'px';
+											(85 + document.getElementById('r-h2')!.offsetHeight + document.getElementById('added-msg')!.offsetHeight +  document.getElementById('info-tabs')!.offsetHeight) + 'px';
         ul_arr[1].style.height = document.getElementById('game-details')!.offsetHeight - 
-											(180 + document.getElementById('r-h2')!.offsetHeight + document.getElementById('added-msg')!.offsetHeight +  document.getElementById('info-tabs')!.offsetHeight) + 'px';
+											(123 + document.getElementById('rc-h2')!.offsetHeight + document.getElementById('added-msg')!.offsetHeight +  document.getElementById('info-tabs')!.offsetHeight) + 'px';
         ul_arr[2].style.height = document.getElementById('game-details')!.offsetHeight - 
-											(183 + document.getElementById('r-h2')!.offsetHeight + document.getElementById('added-msg')!.offsetHeight +  document.getElementById('info-tabs')!.offsetHeight) + 'px';
+											(168 + document.getElementById('s-h2')!.offsetHeight + document.getElementById('added-msg')!.offsetHeight +  document.getElementById('info-tabs')!.offsetHeight) + 'px';
 };
