@@ -1,0 +1,546 @@
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'ffe8d83623d44f7188f47ff183087a10'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 176, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|ffe8d83623d44f7188f47ff183087a10-FQ7Ld|ad3edfd0171843539b32637ae34c9e2c'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 176, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|ffe8d83623d44f7188f47ff183087a10-FQ7Ld|ad3edfd0171843539b32637ae34c9e2c'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 176, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|ffe8d83623d44f7188f47ff183087a10-FQ7Ld|ad3edfd0171843539b32637ae34c9e2c'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 176, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|ffe8d83623d44f7188f47ff183087a10-FQ7Ld|ad3edfd0171843539b32637ae34c9e2c'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|56926a5c744f4ea09e59914999dcd831-FQ7Ld|0c92ed8c309046acbd8d48451deb7e04'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '80b8954caa214b7badbaf2011d8f36b2'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|224b72e619954367bc10f3a89cf1e0ab-FQ7Ld|80b8954caa214b7badbaf2011d8f36b2'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|224b72e619954367bc10f3a89cf1e0ab-FQ7Ld|80b8954caa214b7badbaf2011d8f36b2'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'e240e036ac0f4a4fb419e38fd4143703'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '7dc839bddc514888befc44184cc09daa'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|189467568ae5442990c581d9b371d178-FQ7Ld|7dc839bddc514888befc44184cc09daa'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 97, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|189467568ae5442990c581d9b371d178-FQ7Ld|7dc839bddc514888befc44184cc09daa'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 99, in validateTurn
+    print(sessions[room_id])
+KeyError: 'FQ7Ld|047634f2aa5c42ef8588ea7eab8f2939-FQ7Ld|b9a34330c35742f5a38b79bb68313569'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'b9a34330c35742f5a38b79bb68313569'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 100, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|63f746dcb2494284b28942010560171d-FQ7Ld|6bf8fbe7779c4b56a0c9bcddcbccfc9f'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '63f746dcb2494284b28942010560171d'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|2bb053036e184953b2042958e5f29466-FQ7Ld|9fcde5c1a11a42229e564928e3de6278'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|2bb053036e184953b2042958e5f29466-FQ7Ld|9fcde5c1a11a42229e564928e3de6278'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '9fcde5c1a11a42229e564928e3de6278'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 92, in onDisconnect
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: '9fcde5c1a11a42229e564928e3de6278'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|db162aefe93c405b850a6388601b0bf1'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'db162aefe93c405b850a6388601b0bf1'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 92, in onDisconnect
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: 'db162aefe93c405b850a6388601b0bf1'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|db162aefe93c405b850a6388601b0bf1'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|db162aefe93c405b850a6388601b0bf1'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|db162aefe93c405b850a6388601b0bf1'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'c65e5eee117643a4ac2c328132fcba96'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'c65e5eee117643a4ac2c328132fcba96'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'c65e5eee117643a4ac2c328132fcba96'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 92, in onDisconnect
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: 'c65e5eee117643a4ac2c328132fcba96'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 113, in onLeave
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: 'b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 113, in onLeave
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: 'b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: 'b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c65e5eee117643a4ac2c328132fcba96-FQ7Ld|b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 70, in onCancel
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: 'b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\game-server.py", line 92, in onDisconnect
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: 'b00e5cc7e7c5479ea883cfde557e90a0'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|21bee4113c39443990b97688573680d1-FQ7Ld|05ced556d1a644808ce989a358f6a9ed'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|21bee4113c39443990b97688573680d1-FQ7Ld|05ced556d1a644808ce989a358f6a9ed'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 177, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|21bee4113c39443990b97688573680d1-FQ7Ld|05ced556d1a644808ce989a358f6a9ed'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 178, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|21f2d81bf526477683784c04b4b0c902-FQ7Ld|b207e0df56254d8e92373199923ad373'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '21f2d81bf526477683784c04b4b0c902'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 178, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|21f2d81bf526477683784c04b4b0c902-FQ7Ld|bd5b2e2ff5274b68a13828f1fa64dc7d'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 114, in onLeave
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: '21f2d81bf526477683784c04b4b0c902'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '21f2d81bf526477683784c04b4b0c902'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 178, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|21f2d81bf526477683784c04b4b0c902-FQ7Ld|bd5b2e2ff5274b68a13828f1fa64dc7d'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 178, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|21f2d81bf526477683784c04b4b0c902-FQ7Ld|bd5b2e2ff5274b68a13828f1fa64dc7d'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 114, in onLeave
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: '21f2d81bf526477683784c04b4b0c902'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '21f2d81bf526477683784c04b4b0c902'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 178, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|21f2d81bf526477683784c04b4b0c902-FQ7Ld|bd5b2e2ff5274b68a13828f1fa64dc7d'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 92, in onDisconnect
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: '21f2d81bf526477683784c04b4b0c902'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 178, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|0bd2abdc9a0e4ad3b412b6b0ba91eb33-FQ7Ld|651cb2e8cf584c248849f76ce382d827'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '086e6007ac064f3eb9402a7a70f3c82f'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 114, in onLeave
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has left the room', room_id)
+KeyError: '086e6007ac064f3eb9402a7a70f3c82f'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 56, in onReady
+    chat.roomServerMessage('Client ' + misc.generateNameTag(socket_id, matchmake.sid_cid_pairs[socket_id]) + ' has joined the room',room_id)
+KeyError: '086e6007ac064f3eb9402a7a70f3c82f'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 95, in onDisconnect
+    del sid_cid_pairs[sid]
+NameError: name 'sid_cid_pairs' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 95, in onDisconnect
+    del sid_cid_pairs[sid]
+NameError: name 'sid_cid_pairs' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 95, in onDisconnect
+    del matchmake.sid_cid_pairs[sid]
+NameError: name 'sid' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 182, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|c768abcbcdd64406942348c3afb125c7-FQ7Ld|673ef04c010d4df3939f66864837a841'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 95, in onDisconnect
+    del matchmake.sid_cid_pairs[sid]
+NameError: name 'sid' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 182, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|10b218cf1a78421cbe7a6e8e977b2f0d-FQ7Ld|f80b946f060c4f8e8a66a6dfeb99a172'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 182, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|5e481af57ca3485db0b342cf87185ada-FQ7Ld|23b5040378224ef8b1981b7a0554ecf8'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 182, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|3d05fd5e692c405f9ea9ef34c5bcb781-FQ7Ld|65d62c67b05840049652e497cf2229a9'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 182, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|de155ffc4bb54449aca9161acbc6fbee-FQ7Ld|772b81cc8149465eb688e92e201fce1f'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 182, in onMove
+    session.move(socket_id, position)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 63, in move
+    if validateTurn(sid, position['x'], position['y'], room_id):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\session.py", line 101, in validateTurn
+    if sessions[room_id]['Turn'] == sessions[room_id][sid]['Piece']:
+KeyError: 'FQ7Ld|b0744db399b7405581e635a455c5fc79-FQ7Ld|ca1cab3b2792496ca26a4d2e7b21cd5a'
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 91, in clearRoom
+    session.close(room_id)
+NameError: name 'room_id' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 92, in onDisconnect
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 88, in clearRoom
+    _rooms[room_to_clear]['Viewers'].pop()
+IndexError: pop from empty list
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 92, in onDisconnect
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 91, in clearRoom
+    session.close(room_id)
+NameError: name 'room_id' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 91, in clearRoom
+    session.close(room_id)
+NameError: name 'room_id' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 88, in clearRoom
+    _rooms[room_to_clear]['Viewers'].pop()
+IndexError: pop from empty list
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 88, in clearRoom
+    _rooms[room_to_clear]['Viewers'].pop()
+IndexError: pop from empty list
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 88, in clearRoom
+    _rooms[room_to_clear]['Viewers'].pop()
+IndexError: pop from empty list
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 88, in clearRoom
+    _rooms[room_to_clear]['Viewers'].pop()
+IndexError: pop from empty list
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 88, in clearRoom
+    _rooms[room_to_clear]['Viewers'].pop()
+IndexError: pop from empty list
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 88, in clearRoom
+    _rooms[room_to_clear]['Viewers'].pop()
+IndexError: pop from empty list
+Traceback (most recent call last):
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\game-server.py", line 116, in onLeave
+    matchmake.clearRoom(room_id, socket_id)
+  File "C:\Users\Scherezade\Desktop\GitProjects\Verniy\ultimate-tictactoe\server\test server\matchmake.py", line 91, in clearRoom
+    session.close(room_id)
+NameError: name 'room_id' is not defined

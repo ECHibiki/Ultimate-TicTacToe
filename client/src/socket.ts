@@ -23,7 +23,6 @@ class Socket {
 	
 	removeSocketListeners(listeners:string[]):void{
 		listeners.forEach((ele:string, ind:number)=>{
-			console.log(ele)
 			this.websocket.off(ele)
 		});
 	}

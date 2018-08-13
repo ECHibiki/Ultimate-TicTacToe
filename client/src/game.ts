@@ -34,7 +34,6 @@ class GameSettings{
 		game = new Phaser.Game(config);
 		
 		document.body.addEventListener('notification-move', (notification:any)=>{
-			console.log('nmot')
 			if(document.hasFocus() == true){
 				do{
 					var x_ind = document.title.indexOf('(x)');			
@@ -45,8 +44,6 @@ class GameSettings{
 					if(o_ind > -1){
 						document.title = document.title.substr(o_ind + 3);
 					}	
-					console.log(x_ind + 3)
-					console.log(o_ind + 3)
 				}
 				while (x_ind > -1 || o_ind > -1);
 			}
@@ -61,8 +58,6 @@ class GameSettings{
 					if(o_ind > -1){
 						document.title = document.title.substr(o_ind + 3);
 					}	
-					console.log(x_ind + 3)
-					console.log(o_ind + 3)
 				}
 				while (x_ind > 3 || o_ind > 3);
 				document.title = "(" + notification.detail + ") " + document.title;
@@ -70,9 +65,8 @@ class GameSettings{
 		});	
 		
 		function preload ()	{			
-			this.info_text =  this.add.text(10, 16, 'building game...', { fontSize: '22px', fill: '#fff' });
-
 			this.load.image('board', 'sprites/board.jpg');
+			this.load.image('menu', 'sprites/mainbg.jpg');
 			this.load.image('x', 'sprites/x.png');
 			this.load.image('xG', 'sprites/xG.png');
 			this.load.image('o', 'sprites/o.png');
@@ -81,27 +75,7 @@ class GameSettings{
 			this.load.audio('start', ['sfx/game-start.mp3']);
 			this.load.audio('move', ['sfx/move-done.mp3']);
 			this.load.audio('win', ['sfx/win-fx.mp3']);
-			this.load.audio('lose', ['sfx/lose-fx.mp3']);
-			
-			this.play_text =  this.add.text(900, 16, 'Play', { fontSize: '32px', fill: '#fff' });
-			this.play_text.setInteractive();
-			this.play_text.on('pointerdown', playGame, this);
-			
-			this.spectate_text =  this.add.text(900, 100, 'Spectate', { fontSize: '32px', fill: '#fff' });			
-			this.spectate_text.setInteractive();
-			this.spectate_text.on('pointerdown', spectateMenu, this);				
-			
-			this.cancel_text =  this.add.text(900, 100, 'Cancel', { fontSize: '32px', fill: '#fff' });			
-			this.cancel_text.setInteractive();
-			this.cancel_text.on('pointerdown', cancelSearch, this);				
-			
-			this.back_text =  this.add.text(900, 100, 'Back', { fontSize: '32px', fill: '#fff' });			
-			this.back_text.setInteractive();
-			this.back_text.on('pointerdown', spectateMenuClear, this);			
-
-			this.leave_text =  this.add.text(900, 100, 'Leave', { fontSize: '32px', fill: '#fff' });			
-			this.leave_text.setInteractive();
-			this.leave_text.on('pointerdown', leaveRoom, this);				
+			this.load.audio('lose', ['sfx/lose-fx.mp3']);		
 		}
 		
 		function playGame(click_evnt:any){
@@ -111,8 +85,9 @@ class GameSettings{
 			this.lose_sfx = this.sound.add('win', {pauseOnBlur:"false"});
 			this.win_sfx = this.sound.add('lose', {pauseOnBlur:"false"});
 
-			this.spectate_text.x = 900
-			this.play_text.x = 900
+			this.spectate_text.x = 900;
+			this.play_text.x = 900;
+			this.leave_text.x = 900;
 						
 			//socket handlers
 			socket.socketListener('ready', (data:any)=>{
@@ -123,7 +98,7 @@ class GameSettings{
 			});
 			socket.socketListener('disconnect', (data:any)=>{
 				this.info_text.setText('Game server is offline');
-				this.leave_text.x = 400;
+				this.leave_text.x = 390;
 				this.leave_text.y = 510;
 			});
 			
@@ -144,8 +119,8 @@ class GameSettings{
 			});
 			
 			socket.socketListener('broken',(data:any)=>{
-				this.info_text.setText('Disconnected with other session');
-				this.leave_text.x = 400;
+				this.info_text.setText('Opponent Left');
+				this.leave_text.x = 390;
 				this.leave_text.y = 510;
 			});
 			socket.socketListener('board-data',(data:any)=>{
@@ -153,7 +128,7 @@ class GameSettings{
 				var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18
 				
 				if(data['Message'].indexOf('wins') > -1){
-					this.leave_text.x = 400;
+					this.leave_text.x = 390;
 					this.leave_text.y = 510;
 				}
 				//turns
@@ -235,45 +210,49 @@ class GameSettings{
 			});			
 			
 			//input handlers
-			this.input.on('pointerdown',(event:MouseEvent)=>{
-				if(this.players_turn){
-					this.place_in_progress = true;
-					let y = event.y;
-					if(y > board_height - 1) y = board_height - 1;
-					let x = event.x;
-					var seg_xy = {
-						'x': Math.floor(x / (board_width / 9)),
-						'y': Math.floor(y / (board_height / 9)),
-					};
-					this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
-					this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
-					socket.sendSocket('move', seg_xy);
-				}
-			});
+			this.input.on('pointerdown', pointDown, this);
 			//input handlers
-			this.input.on('pointermove',(event:MouseEvent)=>{
-				if(this.players_turn && this.place_in_progress == false){
-					let y = event.y;
-					if(y > board_height - 1) y = board_height - 1;
-					let x = event.x;
-					var seg_xy = {
-						'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
-						'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
-					};
-					if(this.player_piece == 'x'){
-						this.x_cursor_icon.x = seg_xy['x'];
-						this.x_cursor_icon.y = seg_xy['y'];
-					}
-					else{
-						this.o_cursor_icon.x = seg_xy['x'];
-						this.o_cursor_icon.y = seg_xy['y'];
-					}	
-				}
-			}, this);
+			this.input.on('pointermove',pointMove, this);
 
 			//send ready sign
 			socket.sendSocket('ready', GameConstants.client_name);
 			
+		}
+		
+		function pointMove(event:MouseEvent){
+			if(this.players_turn && this.place_in_progress == false){
+				let y = event.y;
+				if(y > board_height - 1) y = board_height - 1;
+				let x = event.x;
+				var seg_xy = {
+					'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
+					'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
+				};
+				if(this.player_piece == 'x'){
+					this.x_cursor_icon.x = seg_xy['x'];
+					this.x_cursor_icon.y = seg_xy['y'];
+				}
+				else{
+					this.o_cursor_icon.x = seg_xy['x'];
+					this.o_cursor_icon.y = seg_xy['y'];
+				}	
+			}
+		}
+		
+		function pointDown(event:MouseEvent){
+			if(this.players_turn){
+				this.place_in_progress = true;
+				let y = event.y;
+				if(y > board_height - 1) y = board_height - 1;
+				let x = event.x;
+				var seg_xy = {
+					'x': Math.floor(x / (board_width / 9)),
+					'y': Math.floor(y / (board_height / 9)),
+				};
+				this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
+				this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
+				socket.sendSocket('move', seg_xy);
+			}
 		}
 		
 		function cancelSearch(click_evnt:any){
@@ -285,46 +264,12 @@ class GameSettings{
 			socket.sendSocket('cancel', GameConstants.client_name);
 			socket.removeSocketListeners(['ready', 'disconnect', 'join', 'broken', 'board-data']);
 			//remove input handlers
-			this.input.off('pointerdown',(event:MouseEvent)=>{
-				if(this.players_turn){
-					this.place_in_progress = true;
-					let y = event.y;
-					if(y > board_height - 1) y = board_height - 1;
-					let x = event.x;
-					var seg_xy = {
-						'x': Math.floor(x / (board_width / 9)),
-						'y': Math.floor(y / (board_height / 9)),
-					};
-					this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
-					this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
-					socket.sendSocket('move', seg_xy);
-				}
-			}, this);
+			this.input.off('pointerdown',pointDown);
 			//remove input handlers
-			this.input.off('pointermove',(event:MouseEvent)=>{
-				if(this.players_turn && this.place_in_progress == false){
-					let y = event.y;
-					if(y > board_height - 1) y = board_height - 1;
-					let x = event.x;
-					var seg_xy = {
-						'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
-						'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
-					};
-					if(this.player_piece == 'x'){
-						this.x_cursor_icon.x = seg_xy['x'];
-						this.x_cursor_icon.y = seg_xy['y'];
-					}
-					else{
-						this.o_cursor_icon.x = seg_xy['x'];
-						this.o_cursor_icon.y = seg_xy['y'];
-					}	
-				}
-			}, this);
+			this.input.off('pointermove',pointMove);
 		}
 		
-		function spectateMenu(click_evnt:any){
-			console.log('press spec');		
-			console.log(click_evnt);	
+		function spectateMenu(click_evnt:any){	
 			socket.sendSocket('room-fill', GameConstants.client_name);		
 			
 			this.info_text.x = 900;
@@ -334,7 +279,6 @@ class GameSettings{
 			this.back_text.x = 250;
 			
 			socket.socketListener('room-fill', (rooms_resp:any)=>{
-				console.log(rooms_resp);
 				let num = 0;
 				let spacing = 30;
 				for (let room in rooms_resp){
@@ -374,15 +318,13 @@ class GameSettings{
 		}
 		
 		function spectateRoom(room:string, this_copy:any){
-			console.log(room);
-			
 			socket.sendSocket('spectate-room', {'client_name': GameConstants.client_name, 'room':room});					
 			socket.socketListener('spectate-join', (conf:any)=>{
 				
 				this_copy.info_text.x = 25;
 				this_copy.info_text.y = 510;
 				
-				this_copy.leave_text.x = 400;
+				this_copy.leave_text.x = 390;
 				this_copy.leave_text.y = 510;
 
 
@@ -414,7 +356,7 @@ class GameSettings{
 					var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18
 					var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18
 					if(data['Message'].indexOf('wins') > -1){
-						this.leave_text.x = 400;
+						this.leave_text.x = 390;
 						this.leave_text.y = 510;
 					}
 					//turns
@@ -520,41 +462,9 @@ class GameSettings{
 			socket.sendSocket('leave', GameConstants.client_name);
 			socket.removeSocketListeners(['spectate-join', 'ready', 'disconnect', 'join', 'broken', 'board-data']);
 			//remove input handlers
-			this.input.off('pointerdown',(event:MouseEvent)=>{
-				if(this.players_turn){
-					this.place_in_progress = true;
-					let y = event.y;
-					if(y > board_height - 1) y = board_height - 1;
-					let x = event.x;
-					var seg_xy = {
-						'x': Math.floor(x / (board_width / 9)),
-						'y': Math.floor(y / (board_height / 9)),
-					};
-					this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
-					this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
-					socket.sendSocket('move', seg_xy);
-				}
-			}, this);
+			this.input.off('pointerdown',pointDown);
 			//remove input handlers
-			this.input.off('pointermove',(event:MouseEvent)=>{
-				if(this.players_turn && this.place_in_progress == false){
-					let y = event.y;
-					if(y > board_height - 1) y = board_height - 1;
-					let x = event.x;
-					var seg_xy = {
-						'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
-						'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
-					};
-					if(this.player_piece == 'x'){
-						this.x_cursor_icon.x = seg_xy['x'];
-						this.x_cursor_icon.y = seg_xy['y'];
-					}
-					else{
-						this.o_cursor_icon.x = seg_xy['x'];
-						this.o_cursor_icon.y = seg_xy['y'];
-					}	
-				}
-			}, this);
+			this.input.off('pointermove',pointMove);
 		}
 		
 		function create (){
@@ -572,7 +482,30 @@ class GameSettings{
 			this.lose_sfx = null;
 			this.win_sfx = null;
 			
+			this.add.image(250,275,'menu');
+			
+			this.info_text =  this.add.text(10, 16, 'building game...', { fontSize: '22px', fill: '#fff' });
+			
+			this.play_text =  this.add.text(900, 16, 'Play', { fontSize: '32px', fill: '#fff' });
+			this.play_text.setInteractive();
+			this.play_text.on('pointerdown', playGame, this);
+			
+			this.spectate_text =  this.add.text(900, 100, 'Spectate', { fontSize: '32px', fill: '#fff' });			
+			this.spectate_text.setInteractive();
+			this.spectate_text.on('pointerdown', spectateMenu, this);				
+			
+			this.cancel_text =  this.add.text(900, 100, 'Cancel', { fontSize: '32px', fill: '#fff' });			
+			this.cancel_text.setInteractive();
+			this.cancel_text.on('pointerdown', cancelSearch, this);				
+			
+			this.back_text =  this.add.text(900, 100, 'Back', { fontSize: '32px', fill: '#fff' });			
+			this.back_text.setInteractive();
+			this.back_text.on('pointerdown', spectateMenuClear, this);			
 
+			this.leave_text =  this.add.text(900, 100, 'Leave', { fontSize: '32px', fill: '#fff' });			
+			this.leave_text.setInteractive();
+			this.leave_text.on('pointerdown', leaveRoom, this);		
+			
 			this.info_text.x = 900;											
 			this.play_text.x = 30;
 			this.play_text.y = 30;

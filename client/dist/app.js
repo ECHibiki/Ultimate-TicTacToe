@@ -39,7 +39,6 @@ var Socket = /** @class */ (function () {
     Socket.prototype.removeSocketListeners = function (listeners) {
         var _this = this;
         listeners.forEach(function (ele, ind) {
-            console.log(ele);
             _this.websocket.off(ele);
         });
     };
@@ -75,7 +74,6 @@ var GameSettings = /** @class */ (function () {
         };
         game = new Phaser.Game(config);
         document.body.addEventListener('notification-move', function (notification) {
-            console.log('nmot');
             if (document.hasFocus() == true) {
                 do {
                     var x_ind = document.title.indexOf('(x)');
@@ -86,8 +84,6 @@ var GameSettings = /** @class */ (function () {
                     if (o_ind > -1) {
                         document.title = document.title.substr(o_ind + 3);
                     }
-                    console.log(x_ind + 3);
-                    console.log(o_ind + 3);
                 } while (x_ind > -1 || o_ind > -1);
             }
             if (document.hasFocus() == false) {
@@ -100,15 +96,13 @@ var GameSettings = /** @class */ (function () {
                     if (o_ind > -1) {
                         document.title = document.title.substr(o_ind + 3);
                     }
-                    console.log(x_ind + 3);
-                    console.log(o_ind + 3);
                 } while (x_ind > 3 || o_ind > 3);
                 document.title = "(" + notification.detail + ") " + document.title;
             }
         });
         function preload() {
-            this.info_text = this.add.text(10, 16, 'building game...', { fontSize: '22px', fill: '#fff' });
             this.load.image('board', 'sprites/board.jpg');
+            this.load.image('menu', 'sprites/mainbg.jpg');
             this.load.image('x', 'sprites/x.png');
             this.load.image('xG', 'sprites/xG.png');
             this.load.image('o', 'sprites/o.png');
@@ -117,21 +111,6 @@ var GameSettings = /** @class */ (function () {
             this.load.audio('move', ['sfx/move-done.mp3']);
             this.load.audio('win', ['sfx/win-fx.mp3']);
             this.load.audio('lose', ['sfx/lose-fx.mp3']);
-            this.play_text = this.add.text(900, 16, 'Play', { fontSize: '32px', fill: '#fff' });
-            this.play_text.setInteractive();
-            this.play_text.on('pointerdown', playGame, this);
-            this.spectate_text = this.add.text(900, 100, 'Spectate', { fontSize: '32px', fill: '#fff' });
-            this.spectate_text.setInteractive();
-            this.spectate_text.on('pointerdown', spectateMenu, this);
-            this.cancel_text = this.add.text(900, 100, 'Cancel', { fontSize: '32px', fill: '#fff' });
-            this.cancel_text.setInteractive();
-            this.cancel_text.on('pointerdown', cancelSearch, this);
-            this.back_text = this.add.text(900, 100, 'Back', { fontSize: '32px', fill: '#fff' });
-            this.back_text.setInteractive();
-            this.back_text.on('pointerdown', spectateMenuClear, this);
-            this.leave_text = this.add.text(900, 100, 'Leave', { fontSize: '32px', fill: '#fff' });
-            this.leave_text.setInteractive();
-            this.leave_text.on('pointerdown', leaveRoom, this);
         }
         function playGame(click_evnt) {
             var _this = this;
@@ -141,6 +120,7 @@ var GameSettings = /** @class */ (function () {
             this.win_sfx = this.sound.add('lose', { pauseOnBlur: "false" });
             this.spectate_text.x = 900;
             this.play_text.x = 900;
+            this.leave_text.x = 900;
             //socket handlers
             socket.socketListener('ready', function (data) {
                 _this.info_text.setText('Searching for players...');
@@ -150,7 +130,7 @@ var GameSettings = /** @class */ (function () {
             });
             socket.socketListener('disconnect', function (data) {
                 _this.info_text.setText('Game server is offline');
-                _this.leave_text.x = 400;
+                _this.leave_text.x = 390;
                 _this.leave_text.y = 510;
             });
             socket.socketListener('join', function (data) {
@@ -166,15 +146,15 @@ var GameSettings = /** @class */ (function () {
                 _this.game_start_sfx.play();
             });
             socket.socketListener('broken', function (data) {
-                _this.info_text.setText('Disconnected with other session');
-                _this.leave_text.x = 400;
+                _this.info_text.setText('Opponent Left');
+                _this.leave_text.x = 390;
                 _this.leave_text.y = 510;
             });
             socket.socketListener('board-data', function (data) {
                 var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
                 var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
                 if (data['Message'].indexOf('wins') > -1) {
-                    _this.leave_text.x = 400;
+                    _this.leave_text.x = 390;
                     _this.leave_text.y = 510;
                 }
                 //turns
@@ -255,48 +235,49 @@ var GameSettings = /** @class */ (function () {
                 });
             });
             //input handlers
-            this.input.on('pointerdown', function (event) {
-                if (_this.players_turn) {
-                    _this.place_in_progress = true;
-                    var y = event.y;
-                    if (y > board_height - 1)
-                        y = board_height - 1;
-                    var x = event.x;
-                    var seg_xy = {
-                        'x': Math.floor(x / (board_width / 9)),
-                        'y': Math.floor(y / (board_height / 9)),
-                    };
-                    _this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
-                    _this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
-                    socket.sendSocket('move', seg_xy);
-                }
-            });
+            this.input.on('pointerdown', pointDown, this);
             //input handlers
-            this.input.on('pointermove', function (event) {
-                if (_this.players_turn && _this.place_in_progress == false) {
-                    var y = event.y;
-                    if (y > board_height - 1)
-                        y = board_height - 1;
-                    var x = event.x;
-                    var seg_xy = {
-                        'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
-                        'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
-                    };
-                    if (_this.player_piece == 'x') {
-                        _this.x_cursor_icon.x = seg_xy['x'];
-                        _this.x_cursor_icon.y = seg_xy['y'];
-                    }
-                    else {
-                        _this.o_cursor_icon.x = seg_xy['x'];
-                        _this.o_cursor_icon.y = seg_xy['y'];
-                    }
-                }
-            }, this);
+            this.input.on('pointermove', pointMove, this);
             //send ready sign
             socket.sendSocket('ready', GameConstants.client_name);
         }
+        function pointMove(event) {
+            if (this.players_turn && this.place_in_progress == false) {
+                var y = event.y;
+                if (y > board_height - 1)
+                    y = board_height - 1;
+                var x = event.x;
+                var seg_xy = {
+                    'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
+                    'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
+                };
+                if (this.player_piece == 'x') {
+                    this.x_cursor_icon.x = seg_xy['x'];
+                    this.x_cursor_icon.y = seg_xy['y'];
+                }
+                else {
+                    this.o_cursor_icon.x = seg_xy['x'];
+                    this.o_cursor_icon.y = seg_xy['y'];
+                }
+            }
+        }
+        function pointDown(event) {
+            if (this.players_turn) {
+                this.place_in_progress = true;
+                var y = event.y;
+                if (y > board_height - 1)
+                    y = board_height - 1;
+                var x = event.x;
+                var seg_xy = {
+                    'x': Math.floor(x / (board_width / 9)),
+                    'y': Math.floor(y / (board_height / 9)),
+                };
+                this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
+                this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
+                socket.sendSocket('move', seg_xy);
+            }
+        }
         function cancelSearch(click_evnt) {
-            var _this = this;
             this.play_text.x = 10;
             this.spectate_text.x = 10;
             this.info_text.x = 900;
@@ -304,55 +285,18 @@ var GameSettings = /** @class */ (function () {
             socket.sendSocket('cancel', GameConstants.client_name);
             socket.removeSocketListeners(['ready', 'disconnect', 'join', 'broken', 'board-data']);
             //remove input handlers
-            this.input.off('pointerdown', function (event) {
-                if (_this.players_turn) {
-                    _this.place_in_progress = true;
-                    var y = event.y;
-                    if (y > board_height - 1)
-                        y = board_height - 1;
-                    var x = event.x;
-                    var seg_xy = {
-                        'x': Math.floor(x / (board_width / 9)),
-                        'y': Math.floor(y / (board_height / 9)),
-                    };
-                    _this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
-                    _this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
-                    socket.sendSocket('move', seg_xy);
-                }
-            }, this);
+            this.input.off('pointerdown', pointDown);
             //remove input handlers
-            this.input.off('pointermove', function (event) {
-                if (_this.players_turn && _this.place_in_progress == false) {
-                    var y = event.y;
-                    if (y > board_height - 1)
-                        y = board_height - 1;
-                    var x = event.x;
-                    var seg_xy = {
-                        'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
-                        'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
-                    };
-                    if (_this.player_piece == 'x') {
-                        _this.x_cursor_icon.x = seg_xy['x'];
-                        _this.x_cursor_icon.y = seg_xy['y'];
-                    }
-                    else {
-                        _this.o_cursor_icon.x = seg_xy['x'];
-                        _this.o_cursor_icon.y = seg_xy['y'];
-                    }
-                }
-            }, this);
+            this.input.off('pointermove', pointMove);
         }
         function spectateMenu(click_evnt) {
             var _this = this;
-            console.log('press spec');
-            console.log(click_evnt);
             socket.sendSocket('room-fill', GameConstants.client_name);
             this.info_text.x = 900;
             this.play_text.x = 900;
             this.spectate_text.x = 900;
             this.back_text.x = 250;
             socket.socketListener('room-fill', function (rooms_resp) {
-                console.log(rooms_resp);
                 var num = 0;
                 var spacing = 30;
                 for (var room in rooms_resp) {
@@ -391,12 +335,11 @@ var GameSettings = /** @class */ (function () {
         }
         function spectateRoom(room, this_copy) {
             var _this = this;
-            console.log(room);
             socket.sendSocket('spectate-room', { 'client_name': GameConstants.client_name, 'room': room });
             socket.socketListener('spectate-join', function (conf) {
                 this_copy.info_text.x = 25;
                 this_copy.info_text.y = 510;
-                this_copy.leave_text.x = 400;
+                this_copy.leave_text.x = 390;
                 this_copy.leave_text.y = 510;
                 this_copy.info_text.setText('Setting up game...');
                 this_copy.board = this_copy.add.image(250, 250, 'board');
@@ -422,7 +365,7 @@ var GameSettings = /** @class */ (function () {
                     var previous_x = data['Previous-Turn'].split('|')[0] * board_width / 9 + board_width / 18;
                     var previous_y = data['Previous-Turn'].split('|')[1] * board_height / 9 + board_height / 18;
                     if (data['Message'].indexOf('wins') > -1) {
-                        _this.leave_text.x = 400;
+                        _this.leave_text.x = 390;
                         _this.leave_text.y = 510;
                     }
                     //turns
@@ -524,43 +467,9 @@ var GameSettings = /** @class */ (function () {
             socket.sendSocket('leave', GameConstants.client_name);
             socket.removeSocketListeners(['spectate-join', 'ready', 'disconnect', 'join', 'broken', 'board-data']);
             //remove input handlers
-            this.input.off('pointerdown', function (event) {
-                if (_this.players_turn) {
-                    _this.place_in_progress = true;
-                    var y = event.y;
-                    if (y > board_height - 1)
-                        y = board_height - 1;
-                    var x = event.x;
-                    var seg_xy = {
-                        'x': Math.floor(x / (board_width / 9)),
-                        'y': Math.floor(y / (board_height / 9)),
-                    };
-                    _this.reapear_location_x = Math.floor(x / (board_width / 9)) * board_width / 9 + board_width / 18;
-                    _this.reapear_location_y = Math.floor(y / (board_width / 9)) * board_height / 9 + board_height / 18;
-                    socket.sendSocket('move', seg_xy);
-                }
-            }, this);
+            this.input.off('pointerdown', pointDown);
             //remove input handlers
-            this.input.off('pointermove', function (event) {
-                if (_this.players_turn && _this.place_in_progress == false) {
-                    var y = event.y;
-                    if (y > board_height - 1)
-                        y = board_height - 1;
-                    var x = event.x;
-                    var seg_xy = {
-                        'x': Math.floor(x / (board_width / 9)) * (board_width / 9) + (board_width / (9 * 2)),
-                        'y': Math.floor(y / (board_height / 9)) * (board_height / 9) + (board_height / (9 * 2)),
-                    };
-                    if (_this.player_piece == 'x') {
-                        _this.x_cursor_icon.x = seg_xy['x'];
-                        _this.x_cursor_icon.y = seg_xy['y'];
-                    }
-                    else {
-                        _this.o_cursor_icon.x = seg_xy['x'];
-                        _this.o_cursor_icon.y = seg_xy['y'];
-                    }
-                }
-            }, this);
+            this.input.off('pointermove', pointMove);
         }
         function create() {
             this.board = null;
@@ -575,6 +484,23 @@ var GameSettings = /** @class */ (function () {
             this.move_sfx = null;
             this.lose_sfx = null;
             this.win_sfx = null;
+            this.add.image(250, 275, 'menu');
+            this.info_text = this.add.text(10, 16, 'building game...', { fontSize: '22px', fill: '#fff' });
+            this.play_text = this.add.text(900, 16, 'Play', { fontSize: '32px', fill: '#fff' });
+            this.play_text.setInteractive();
+            this.play_text.on('pointerdown', playGame, this);
+            this.spectate_text = this.add.text(900, 100, 'Spectate', { fontSize: '32px', fill: '#fff' });
+            this.spectate_text.setInteractive();
+            this.spectate_text.on('pointerdown', spectateMenu, this);
+            this.cancel_text = this.add.text(900, 100, 'Cancel', { fontSize: '32px', fill: '#fff' });
+            this.cancel_text.setInteractive();
+            this.cancel_text.on('pointerdown', cancelSearch, this);
+            this.back_text = this.add.text(900, 100, 'Back', { fontSize: '32px', fill: '#fff' });
+            this.back_text.setInteractive();
+            this.back_text.on('pointerdown', spectateMenuClear, this);
+            this.leave_text = this.add.text(900, 100, 'Leave', { fontSize: '32px', fill: '#fff' });
+            this.leave_text.setInteractive();
+            this.leave_text.on('pointerdown', leaveRoom, this);
             this.info_text.x = 900;
             this.play_text.x = 30;
             this.play_text.y = 30;
@@ -760,40 +686,39 @@ window.onload = function () {
         var room_chat = new RoomChat(document.getElementById('room-chat'), socket);
         var global_chat = new GlobalChat(document.getElementById('global-chat'), socket);
         var settings = new Settings();
+        var game = new GameSettings(socket);
+        //scale everything to good size
+        //scale everything to good size
+        var win_width = window.innerWidth / window.devicePixelRatio;
+        if (win_width < 1450) {
+            var scale = win_width / 1450;
+            var height = 550 * window.devicePixelRatio * scale;
+            var width = 500 * window.devicePixelRatio * scale;
+            document.getElementById('phaser-game').firstChild.style.height = height + 'px';
+            document.getElementById('phaser-game').firstChild.style.width = width + 'px';
+            document.getElementById('game-details').style.width = width + 'px';
+            document.getElementById('game-details').style.height = height + 'px';
+        }
+        else {
+            var scale = 1.0;
+            var height = 550 * window.devicePixelRatio * scale;
+            var width = 500 * window.devicePixelRatio * scale;
+            document.getElementById('phaser-game').firstChild.style.height = height + 'px';
+            document.getElementById('phaser-game').firstChild.style.width = width + 'px';
+            document.getElementById('game-details').style.width = width + 'px';
+            document.getElementById('game-details').style.height = height + 'px';
+        }
+        var ul_arr = document.querySelectorAll("ul[ul-tag='']");
+        ul_arr[0].style.height = document.getElementById('game-details').offsetHeight -
+            (85 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
+        ul_arr[1].style.height = document.getElementById('game-details').offsetHeight -
+            (123 + document.getElementById('rc-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
+        ul_arr[2].style.height = document.getElementById('game-details').offsetHeight -
+            (168 + document.getElementById('s-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
     });
     socket.socketListener('error', function (err) {
         console.log(err);
         alert('Server had an error\n ' + err);
     });
-    var game = new GameSettings(socket);
-    //scale everything to good size
-    //scale everything to good size
-    var win_width = window.innerWidth / window.devicePixelRatio;
-    console.log(win_width);
-    if (win_width < 1400) {
-        var scale = win_width / 1400;
-        var height = 550 * window.devicePixelRatio * scale;
-        var width = 500 * window.devicePixelRatio * scale;
-        document.getElementById('phaser-game').firstChild.style.height = height + 'px';
-        document.getElementById('phaser-game').firstChild.style.width = width + 'px';
-        document.getElementById('game-details').style.width = width + 'px';
-        document.getElementById('game-details').style.height = height + 'px';
-    }
-    else {
-        var scale = 1.0;
-        var height = 550 * window.devicePixelRatio * scale;
-        var width = 500 * window.devicePixelRatio * scale;
-        document.getElementById('phaser-game').firstChild.style.height = height + 'px';
-        document.getElementById('phaser-game').firstChild.style.width = width + 'px';
-        document.getElementById('game-details').style.width = width + 'px';
-        document.getElementById('game-details').style.height = height + 'px';
-    }
-    var ul_arr = document.querySelectorAll("ul[ul-tag='']");
-    ul_arr[0].style.height = document.getElementById('game-details').offsetHeight -
-        (85 + document.getElementById('r-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
-    ul_arr[1].style.height = document.getElementById('game-details').offsetHeight -
-        (123 + document.getElementById('rc-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
-    ul_arr[2].style.height = document.getElementById('game-details').offsetHeight -
-        (168 + document.getElementById('s-h2').offsetHeight + document.getElementById('added-msg').offsetHeight + document.getElementById('info-tabs').offsetHeight) + 'px';
 };
 //# sourceMappingURL=app.js.map
